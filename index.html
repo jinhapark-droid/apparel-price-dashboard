@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>어패럴 가격 변동 대시보드</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3347;
+      --primary: #6c8fff;
+      --primary-dim: #3d5099;
+      --accent: #ff6b8a;
+      --accent-green: #4ecca3;
+      --accent-yellow: #ffd166;
+      --text: #e8eaf6;
+      --text-dim: #8b90a8;
+      --text-muted: #555a72;
+      --danger: #ff4d6d;
+      --warning: #ffd166;
+      --success: #4ecca3;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; font-size: 14px; line-height: 1.5; }
+
+    /* Layout */
+    .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .logo { font-size: 18px; font-weight: 700; color: var(--primary); letter-spacing: -0.5px; }
+    .logo span { color: var(--accent); }
+    .refresh-btn { background: var(--primary-dim); color: var(--primary); border: 1px solid var(--primary); padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+    .refresh-btn:hover { background: var(--primary); color: #fff; }
+    .refresh-btn.loading { opacity: 0.6; pointer-events: none; }
+    .last-updated { color: var(--text-muted); font-size: 12px; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 2px; padding: 16px 24px 0; border-bottom: 1px solid var(--border); background: var(--surface); }
+    .tab { padding: 10px 20px; border-radius: 8px 8px 0 0; cursor: pointer; color: var(--text-dim); font-weight: 500; transition: all 0.2s; border: 1px solid transparent; border-bottom: none; }
+    .tab:hover { color: var(--text); background: var(--surface2); }
+    .tab.active { color: var(--primary); background: var(--bg); border-color: var(--border); position: relative; bottom: -1px; }
+
+    /* Main */
+    .main { padding: 24px; max-width: 1600px; margin: 0 auto; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* KPI Cards */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .kpi-label { color: var(--text-dim); font-size: 12px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .kpi-value { font-size: 28px; font-weight: 700; }
+    .kpi-sub { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
+    .kpi-card.blue .kpi-value { color: var(--primary); }
+    .kpi-card.red .kpi-value { color: var(--accent); }
+    .kpi-card.green .kpi-value { color: var(--accent-green); }
+    .kpi-card.yellow .kpi-value { color: var(--accent-yellow); }
+
+    /* Cards */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+    .card-title { font-size: 15px; font-weight: 600; margin-bottom: 16px; color: var(--text); display: flex; align-items: center; justify-content: space-between; }
+    .card-title .badge { font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 500; }
+    .badge-blue { background: #1a2a5e; color: var(--primary); }
+    .badge-red { background: #3d1a26; color: var(--accent); }
+    .badge-green { background: #1a3d30; color: var(--accent-green); }
+    .badge-yellow { background: #3d3010; color: var(--accent-yellow); }
+
+    /* Charts */
+    .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+    .chart-container { position: relative; height: 280px; }
+    @media (max-width: 900px) { .chart-grid { grid-template-columns: 1fr; } }
+
+    /* Tables */
+    .table-wrap { overflow-x: auto; border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th { background: var(--surface2); color: var(--text-dim); padding: 10px 12px; text-align: left; font-weight: 600; white-space: nowrap; border-bottom: 1px solid var(--border); position: sticky; top: 0; }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+    tbody tr:hover { background: var(--surface2); }
+    tbody td { padding: 10px 12px; white-space: nowrap; }
+    tbody td:first-child { color: var(--text); font-weight: 500; }
+    .td-num { text-align: right; font-variant-numeric: tabular-nums; font-family: 'JetBrains Mono', 'Courier New', monospace; }
+    .td-center { text-align: center; }
+
+    /* Discount badges */
+    .disc { display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 12px; font-family: monospace; }
+    .disc-0 { background: #1a3d30; color: var(--accent-green); }
+    .disc-low { background: #1a2a5e; color: var(--primary); }
+    .disc-mid { background: #3d3010; color: var(--accent-yellow); }
+    .disc-high { background: #3d1a26; color: var(--accent); }
+
+    /* Margin badges */
+    .margin-good { color: var(--accent-green); font-weight: 600; }
+    .margin-ok { color: var(--accent-yellow); font-weight: 600; }
+    .margin-bad { color: var(--accent); font-weight: 600; }
+
+    /* Filters */
+    .filter-bar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+    .filter-bar select, .filter-bar input { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 7px 12px; border-radius: 8px; font-size: 13px; outline: none; cursor: pointer; }
+    .filter-bar select:focus, .filter-bar input:focus { border-color: var(--primary); }
+    .filter-label { color: var(--text-muted); font-size: 12px; font-weight: 500; }
+
+    /* Strategy cards */
+    .strategy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 20px; }
+    .strategy-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .strategy-card.warn { border-color: #5c4000; background: #1a1600; }
+    .strategy-card.good { border-color: #005c3a; background: #001610; }
+    .strategy-card.alert { border-color: #5c001a; background: #160007; }
+    .strategy-card.info { border-color: #003a5c; background: #000d16; }
+    .strategy-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .strategy-title .icon { font-size: 18px; }
+    .strategy-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .strategy-item:last-child { border-bottom: none; }
+    .strategy-item .dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+    .dot-yellow { background: var(--accent-yellow); }
+    .dot-red { background: var(--accent); }
+    .dot-green { background: var(--accent-green); }
+    .dot-blue { background: var(--primary); }
+    .strategy-tag { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-left: 4px; vertical-align: middle; }
+
+    /* Compare table */
+    .compare-header { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .compare-flag { padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 700; }
+    .flag-kr { background: #1a2a5e; color: #6c8fff; }
+    .flag-jp { background: #3d1a26; color: #ff6b8a; }
+    .price-diff-pos { color: var(--accent); font-size: 11px; }
+    .price-diff-neg { color: var(--accent-green); font-size: 11px; }
+
+    /* Loading state */
+    .loading-overlay { text-align: center; padding: 60px; color: var(--text-dim); }
+    .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Section headers */
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .section-title { font-size: 20px; font-weight: 700; }
+    .section-title .month-badge { font-size: 13px; color: var(--text-muted); font-weight: 400; margin-left: 8px; }
+
+    /* Tag category pills */
+    .cat-pill { display: inline-block; padding: 1px 7px; border-radius: 4px; font-size: 11px; background: var(--surface2); color: var(--text-dim); margin-right: 4px; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 1100px) { .two-col { grid-template-columns: 1fr; } }
+
+    .empty-row td { text-align: center; color: var(--text-muted); padding: 32px; }
+
+    /* Period selector */
+    .period-chip { display: inline-flex; align-items: center; gap: 6px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 5px 14px; font-size: 12px; color: var(--text-dim); }
+    .period-chip.active { border-color: var(--primary); color: var(--primary); background: #1a2a5e; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo">APPAREL <span>PRICE</span> DASH</div>
+    <span class="last-updated" id="lastUpdated">데이터 로딩 중...</span>
+  </div>
+  <button class="refresh-btn" onclick="loadAllData()">
+    <span id="refreshIcon">↺</span> 새로고침
+  </button>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('overview')">전체 현황</div>
+  <div class="tab" onclick="switchTab('korea')">🇰🇷 국내 온라인</div>
+  <div class="tab" onclick="switchTab('japan')">🇯🇵 일본</div>
+  <div class="tab" onclick="switchTab('compare')">국내 vs 일본 비교</div>
+  <div class="tab" onclick="switchTab('strategy')">📋 전략 계획 자동 추출</div>
+</div>
+
+<div class="main">
+
+  <!-- Overview Tab -->
+  <div id="tab-overview" class="tab-content active">
+    <div id="overview-content">
+      <div class="loading-overlay"><div class="spinner"></div><div>데이터 불러오는 중...</div></div>
+    </div>
+  </div>
+
+  <!-- Korea Tab -->
+  <div id="tab-korea" class="tab-content">
+    <div class="filter-bar">
+      <span class="filter-label">필터:</span>
+      <select id="kr-season-filter" onchange="renderKoreaTab()"><option value="">전체 시즌</option></select>
+      <select id="kr-promo-filter" onchange="renderKoreaTab()"><option value="">전체 프로모션</option></select>
+      <select id="kr-cat-filter" onchange="renderKoreaTab()"><option value="">전체 카테고리</option></select>
+      <input type="text" id="kr-search" placeholder="상품명 검색..." oninput="renderKoreaTab()" style="min-width:180px">
+    </div>
+    <div id="korea-content"><div class="loading-overlay"><div class="spinner"></div><div>로딩 중...</div></div></div>
+  </div>
+
+  <!-- Japan Tab -->
+  <div id="tab-japan" class="tab-content">
+    <div class="filter-bar">
+      <span class="filter-label">필터:</span>
+      <select id="jp-season-filter" onchange="renderJapanTab()"><option value="">전체 시즌</option></select>
+      <select id="jp-promo-filter" onchange="renderJapanTab()"><option value="">전체 프로모션</option></select>
+      <input type="text" id="jp-search" placeholder="상품명 검색..." oninput="renderJapanTab()" style="min-width:180px">
+    </div>
+    <div id="japan-content"><div class="loading-overlay"><div class="spinner"></div><div>로딩 중...</div></div></div>
+  </div>
+
+  <!-- Compare Tab -->
+  <div id="tab-compare" class="tab-content">
+    <div id="compare-content"><div class="loading-overlay"><div class="spinner"></div><div>로딩 중...</div></div></div>
+  </div>
+
+  <!-- Strategy Tab -->
+  <div id="tab-strategy" class="tab-content">
+    <div id="strategy-content"><div class="loading-overlay"><div class="spinner"></div><div>전략 분석 중...</div></div></div>
+  </div>
+
+</div>
+
+<script>
+// ==================== CONFIG ====================
+const KR_CSV_URL = 'https://docs.google.com/spreadsheets/d/1elpoQQ3CW4aNpcZfFJbu8q3ShUGKhNoZT2p3dGw4MFA/gviz/tq?tqx=out:csv&gid=0';
+const JP_CSV_URL = 'https://docs.google.com/spreadsheets/d/1elpoQQ3CW4aNpcZfFJbu8q3ShUGKhNoZT2p3dGw4MFA/gviz/tq?tqx=out:csv&gid=840724680';
+
+// ==================== STATE ====================
+let krData = [], jpData = [];
+let krRaw = [], jpRaw = [];
+let charts = {};
+
+// ==================== UTILS ====================
+function num(v) {
+  if (!v || v === '' || v === '-') return 0;
+  return parseFloat(String(v).replace(/[^0-9.\-]/g, '')) || 0;
+}
+function pct(v) {
+  const s = String(v || '').replace('%','').trim();
+  return parseFloat(s) || 0;
+}
+function fmt(n, suffix='') {
+  if (!n || n===0) return '-';
+  return n.toLocaleString('ko-KR') + suffix;
+}
+function fmtPct(v) { return v ? v.toFixed(1)+'%' : '-'; }
+function discClass(p) {
+  if (!p || p===0) return 'disc-0';
+  if (p <= 15) return 'disc-low';
+  if (p <= 25) return 'disc-mid';
+  return 'disc-high';
+}
+function marginClass(m) {
+  if (m >= 50) return 'margin-good';
+  if (m >= 35) return 'margin-ok';
+  return 'margin-bad';
+}
+function getCategory(name) {
+  if (!name) return '기타';
+  const n = name.toLowerCase();
+  if (n.includes('재킷')) return '재킷';
+  if (n.includes('롱슬리브') || n.includes('long')) return '롱슬리브';
+  if (n.includes('티셔츠') || n.includes('t-shirt')) return '티셔츠';
+  if (n.includes('팬츠')) return '팬츠';
+  if (n.includes('쇼츠') || n.includes('반바지')) return '쇼츠';
+  if (n.includes('셔츠')) return '셔츠';
+  if (n.includes('후디') || n.includes('후드')) return '후디';
+  if (n.includes('캡') || n.includes('모자')) return '캡';
+  if (n.includes('팩') || n.includes('백') || n.includes('가방')) return '가방/팩';
+  return '기타';
+}
+
+function destroyChart(key) {
+  if (charts[key]) { charts[key].destroy(); delete charts[key]; }
+}
+
+// ==================== DATA LOADING ====================
+async function loadCSV(url) {
+  return new Promise((resolve, reject) => {
+    Papa.parse(url, {
+      download: true,
+      header: true,
+      skipEmptyLines: true,
+      complete: r => resolve(r.data),
+      error: e => reject(e)
+    });
+  });
+}
+
+function parseKR(rows) {
+  return rows.map(r => {
+    const keys = Object.keys(r);
+    const name = r['상품명'] || r['제품'] || '';
+    const styleNum = r['스타일넘버'] || '';
+    const tagPrice = num(r['정가 TAG PRICE'] || r['TAG PRICE']);
+    const salePrice = num(r['판매가']);
+    const normalPrice = num(r['상시판매가']);
+    // Find discount column dynamically — header contains asterisk/spaces
+    const discKey = keys.find(k => k.includes('마케팅') && k.includes('할인율')) || keys.find(k => k.includes('정가 대비 할인율')) || '';
+    const normalDiscKey = keys.find(k => k.includes('상시 대비 할인율')) || '';
+    const discountRate = pct(discKey ? r[discKey] : '') || pct(normalDiscKey ? r[normalDiscKey] : '');
+    const normalDiscRate = pct(normalDiscKey ? r[normalDiscKey] : '');
+    const cost = num(r['원가']);
+    const costRate = pct(r['원가율']);
+    const margin = num(r['마진']);
+    const marginRate = pct(r['마진율']);
+    const startDate = r['시작일'] || '';
+    const endDate = r['종료일'] || '';
+    const promo = r['프로모션'] || '';
+    const season = r['SEASON'] || '';
+    const launchMonth = r['출시월'] || '';
+    const color = r['옵션(컬러)'] || '';
+    const feeKey = keys.find(k => k === '수수료') || '';
+    const fee = num(feeKey ? r[feeKey] : r['수수료']);
+    const shipping = num(r['배송비']);
+    return { name, styleNum, tagPrice, salePrice, normalPrice, discountRate, normalDiscRate, cost, costRate, margin, marginRate, startDate, endDate, promo, season, launchMonth, color, fee, shipping, category: getCategory(name), _raw: r };
+  }).filter(r => r.name);
+}
+
+function parseJP(rows) {
+  return rows.map(r => {
+    const name = r['제품'] || r['상품명'] || '';
+    const styleNum = r['스타일넘버'] || '';
+    const tagPriceJpy = r['JPY 기준 정가\nTAG PRICE'] || r['JPY 기준 정가TAG PRICE'] || r['JPY 기준 정가 TAG PRICE'] || '';
+    const salePriceJpy = r['최종 판매가'] || '';
+    const salePriceKrw = num(r['판매가 WON']);
+    const discountJpy = r['할인액'] || '';
+    const discountRate = pct(r['할인율']);
+    const tagPriceKrw = num(r['KRW 기준 정가\nTAG PRICE'] || r['KRW 기준 정가 TAG PRICE'] || r['KRW 기준 정가TAG PRICE']);
+    const salePriceKrwRef = num(r['판매가']);
+    const cost = num(r['원가']);
+    const costRate = pct(r['원가율']);
+    const margin = num(r['마진']);
+    const marginRate = pct(r['마진율']);
+    const finalMulti = num(r['최종 배수']);
+    const startDate = r['시작일'] || '';
+    const endDate = r['종료일'] || '';
+    const promo = r['프로모션'] || '';
+    const season = r['SEASON'] || '';
+    const launchMonth = r['출시월'] || '';
+    const color = r['옵션(컬러)'] || '';
+    const customs = num(r['관세(13%)+소비세(5% 환급 기준) '] || r['관세(13%)+소비세(5% 환급 기준)']);
+    const fee = num(r['수수료']);
+    const shipping = num(r['배송비']);
+    return { name, styleNum, tagPriceJpy: tagPriceJpy.replace(/[¥,]/g,''), salePriceJpy: salePriceJpy.replace(/[¥,]/g,''), salePriceKrw, discountJpy: discountJpy.replace(/[¥,]/g,''), discountRate, tagPriceKrw, salePriceKrwRef, cost, costRate, margin, marginRate, finalMulti, startDate, endDate, promo, season, launchMonth, color, customs, fee, shipping, category: getCategory(name), _raw: r };
+  }).filter(r => r.name);
+}
+
+// Aggregate by styleNum — keep LATEST record by startDate, collect all colors
+function aggregateByStyle(data) {
+  const map = new Map();
+  data.forEach(r => {
+    if (!map.has(r.styleNum)) {
+      map.set(r.styleNum, { ...r, colors: [r.color], count: 1 });
+    } else {
+      const existing = map.get(r.styleNum);
+      if (r.color && !existing.colors.includes(r.color)) existing.colors.push(r.color);
+      existing.count++;
+      // Prefer record with later startDate
+      if (r.startDate && (!existing.startDate || r.startDate > existing.startDate)) {
+        const colors = existing.colors;
+        const count = existing.count;
+        map.set(r.styleNum, { ...r, colors, count });
+      }
+    }
+  });
+  return Array.from(map.values());
+}
+
+async function loadAllData() {
+  const btn = document.querySelector('.refresh-btn');
+  const icon = document.getElementById('refreshIcon');
+  btn.classList.add('loading');
+  icon.style.animation = 'spin 0.8s linear infinite';
+  icon.style.display = 'inline-block';
+  document.getElementById('lastUpdated').textContent = '데이터 불러오는 중...';
+
+  try {
+    const [krRows, jpRows] = await Promise.all([loadCSV(KR_CSV_URL), loadCSV(JP_CSV_URL)]);
+    krRaw = krRows;
+    jpRaw = jpRows;
+    krData = parseKR(krRows);
+    jpData = parseJP(jpRows);
+
+    populateFilters();
+    renderOverview();
+    renderKoreaTab();
+    renderJapanTab();
+    renderCompareTab();
+    renderStrategyTab();
+
+    const now = new Date();
+    document.getElementById('lastUpdated').textContent = `최종 업데이트: ${now.getMonth()+1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+  } catch(e) {
+    document.getElementById('lastUpdated').textContent = '데이터 로드 실패 - 시트 공개 여부 확인 필요';
+    console.error(e);
+  } finally {
+    btn.classList.remove('loading');
+    icon.style.animation = '';
+  }
+}
+
+function populateFilters() {
+  const krSeasons = [...new Set(krData.map(r=>r.season).filter(Boolean))];
+  const krPromos = [...new Set(krData.map(r=>r.promo).filter(Boolean))];
+  const krCats = [...new Set(krData.map(r=>r.category).filter(Boolean))];
+  const jpSeasons = [...new Set(jpData.map(r=>r.season).filter(Boolean))];
+  const jpPromos = [...new Set(jpData.map(r=>r.promo).filter(Boolean))];
+
+  function fillSelect(id, arr) {
+    const sel = document.getElementById(id);
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">전체</option>' + arr.map(v=>`<option value="${v}">${v}</option>`).join('');
+    sel.value = cur;
+  }
+  fillSelect('kr-season-filter', krSeasons);
+  fillSelect('kr-promo-filter', krPromos);
+  fillSelect('kr-cat-filter', krCats);
+  fillSelect('jp-season-filter', jpSeasons);
+  fillSelect('jp-promo-filter', jpPromos);
+}
+
+// ==================== OVERVIEW ====================
+function renderOverview() {
+  const krAgg = aggregateByStyle(krData);
+  const jpAgg = aggregateByStyle(jpData);
+
+  const seasons = [...new Set([...krData, ...jpData].map(r=>r.season).filter(Boolean))].sort();
+  const recentSeason = seasons[seasons.length-1] || '';
+  const promos = [...new Set([...krData, ...jpData].filter(r=>r.season===recentSeason).map(r=>r.promo).filter(Boolean))];
+
+  // KPIs based on most recent season only
+  const krRecent = krAgg.filter(r=>r.season===recentSeason);
+  const jpRecent = jpAgg.filter(r=>r.season===recentSeason);
+  const avgKrDisc = krRecent.reduce((s,r)=>s+r.discountRate,0) / (krRecent.length||1);
+  const avgKrMargin = krRecent.reduce((s,r)=>s+r.marginRate,0) / (krRecent.length||1);
+  const avgJpDisc = jpRecent.reduce((s,r)=>s+r.discountRate,0) / (jpRecent.length||1);
+  const avgJpMargin = jpRecent.reduce((s,r)=>s+r.marginRate,0) / (jpRecent.length||1);
+
+  let html = `
+    <div class="section-header">
+      <div class="section-title">전체 현황 <span class="month-badge">${recentSeason} 최신 프로모션</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${seasons.map(s=>`<span class="period-chip ${s===recentSeason?'active':''}">${s}</span>`).join('')}
+      </div>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card blue"><div class="kpi-label">국내 제품 수 (${recentSeason})</div><div class="kpi-value">${krRecent.length}</div><div class="kpi-sub">전체 ${krAgg.length}개 스타일 / ${krData.length} SKU</div></div>
+      <div class="kpi-card red"><div class="kpi-label">일본 제품 수 (${recentSeason})</div><div class="kpi-value">${jpRecent.length}</div><div class="kpi-sub">전체 ${jpAgg.length}개 스타일 / ${jpData.length} SKU</div></div>
+      <div class="kpi-card yellow"><div class="kpi-label">국내 평균 할인율</div><div class="kpi-value">${avgKrDisc.toFixed(1)}%</div><div class="kpi-sub">정가 대비</div></div>
+      <div class="kpi-card yellow"><div class="kpi-label">일본 평균 할인율</div><div class="kpi-value">${avgJpDisc.toFixed(1)}%</div><div class="kpi-sub">JPY 정가 대비</div></div>
+      <div class="kpi-card green"><div class="kpi-label">국내 평균 마진율</div><div class="kpi-value">${avgKrMargin.toFixed(1)}%</div><div class="kpi-sub">판매가 기준</div></div>
+      <div class="kpi-card green"><div class="kpi-label">일본 평균 마진율</div><div class="kpi-value">${avgJpMargin.toFixed(1)}%</div><div class="kpi-sub">KRW 환산 기준</div></div>
+    </div>
+  `;
+
+  // Category breakdown
+  const catMap = {};
+  krRecent.forEach(r => { if(!catMap[r.category]) catMap[r.category]={kr:0,jp:0,krDisc:0,krMargin:0}; catMap[r.category].kr++; catMap[r.category].krDisc+=r.discountRate; catMap[r.category].krMargin+=r.marginRate; });
+  jpRecent.forEach(r => { if(!catMap[r.category]) catMap[r.category]={kr:0,jp:0,krDisc:0,krMargin:0}; catMap[r.category].jp++; });
+
+  html += `
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">카테고리별 현황</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>카테고리</th><th class="td-center">국내</th><th class="td-center">일본</th><th class="td-num">평균 할인율</th><th class="td-num">평균 마진율</th></tr></thead>
+            <tbody>
+              ${Object.entries(catMap).map(([cat, v]) => `
+                <tr>
+                  <td><span class="cat-pill">${cat}</span></td>
+                  <td class="td-center">${v.kr || '-'}</td>
+                  <td class="td-center">${v.jp || '-'}</td>
+                  <td class="td-num"><span class="disc ${discClass(v.kr ? v.krDisc/v.kr : 0)}">${v.kr ? (v.krDisc/v.kr).toFixed(0)+'%' : '-'}</span></td>
+                  <td class="td-num ${marginClass(v.kr ? v.krMargin/v.kr : 0)}">${v.kr ? (v.krMargin/v.kr).toFixed(1)+'%' : '-'}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">프로모션 기간</div>
+        ${[...new Set([...krData,...jpData].filter(r=>r.season===recentSeason).map(r=>r.promo+'^'+r.startDate+'^'+r.endDate))].map(k=>{
+          const [promo,start,end]=k.split('^');
+          return `<div style="padding:12px;background:var(--surface2);border-radius:8px;margin-bottom:8px">
+            <div style="font-weight:600;margin-bottom:4px">${promo}</div>
+            <div style="color:var(--text-dim);font-size:12px">📅 ${start} ~ ${end}</div>
+          </div>`;
+        }).join('')}
+        <div style="margin-top:8px;padding:10px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+          <div style="color:var(--text-muted);font-size:11px">📊 전시즌 히스토리: ${seasons.join(' · ')}</div>
+          <div style="color:var(--text-muted);font-size:11px;margin-top:2px">국내 ${krData.length} SKU · 일본 ${jpData.length} SKU</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Charts
+  html += `
+    <div class="chart-grid">
+      <div class="card">
+        <div class="card-title">국내 할인율 분포 <span class="badge badge-blue">국내</span></div>
+        <div class="chart-container"><canvas id="chart-kr-disc"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">국내 마진율 분포 <span class="badge badge-green">국내</span></div>
+        <div class="chart-container"><canvas id="chart-kr-margin"></canvas></div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('overview-content').innerHTML = html;
+
+  // Render charts after DOM update
+  setTimeout(() => {
+    renderDiscChart('chart-kr-disc', krRecent.length ? krRecent : krAgg);
+    renderMarginChart('chart-kr-margin', krRecent.length ? krRecent : krAgg);
+  }, 50);
+}
+
+function renderDiscChart(id, data) {
+  destroyChart(id);
+  const byDisc = {};
+  data.forEach(r => {
+    const bin = r.discountRate === 0 ? '0%' : r.discountRate <= 15 ? '1~15%' : r.discountRate <= 25 ? '16~25%' : r.discountRate <= 35 ? '26~35%' : '35%+';
+    byDisc[bin] = (byDisc[bin]||0) + 1;
+  });
+  const order = ['0%','1~15%','16~25%','26~35%','35%+'];
+  const labels = order.filter(k => byDisc[k]);
+  const vals = labels.map(k => byDisc[k]);
+  const colors = ['#4ecca3','#6c8fff','#ffd166','#ff9f43','#ff4d6d'];
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  charts[id] = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ data: vals, backgroundColor: labels.map((_,i)=>colors[i]||'#888'), borderRadius: 6 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#8b90a8' }, grid: { color: '#2e3347' } }, y: { ticks: { color: '#8b90a8', stepSize: 1 }, grid: { color: '#2e3347' } } } }
+  });
+}
+
+function renderMarginChart(id, data) {
+  destroyChart(id);
+  const sorted = [...data].sort((a,b) => b.marginRate - a.marginRate).slice(0, 12);
+  const labels = sorted.map(r => r.name.replace('어반사이드 ','').substring(0,12));
+  const vals = sorted.map(r => r.marginRate);
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  charts[id] = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ data: vals, backgroundColor: vals.map(v => v>=50?'#4ecca3':v>=35?'#ffd166':'#ff4d6d'), borderRadius: 4 }] },
+    options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.raw.toFixed(1)+'%' } } }, scales: { x: { ticks: { color: '#8b90a8', callback: v=>v+'%' }, grid: { color: '#2e3347' } }, y: { ticks: { color: '#8b90a8', font: { size: 11 } }, grid: { display: false } } } }
+  });
+}
+
+// ==================== KOREA TAB ====================
+function renderKoreaTab() {
+  const season = document.getElementById('kr-season-filter').value;
+  const promo = document.getElementById('kr-promo-filter').value;
+  const cat = document.getElementById('kr-cat-filter').value;
+  const search = document.getElementById('kr-search').value.toLowerCase();
+
+  let filtered = krData.filter(r => {
+    if (season && r.season !== season) return false;
+    if (promo && r.promo !== promo) return false;
+    if (cat && r.category !== cat) return false;
+    if (search && !r.name.toLowerCase().includes(search) && !r.styleNum.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  const agg = aggregateByStyle(filtered);
+  const avgDisc = agg.reduce((s,r)=>s+r.discountRate,0)/(agg.length||1);
+  const avgMargin = agg.reduce((s,r)=>s+r.marginRate,0)/(agg.length||1);
+
+  let html = `
+    <div class="kpi-grid" style="margin-bottom:20px">
+      <div class="kpi-card blue"><div class="kpi-label">표시 제품 수</div><div class="kpi-value">${agg.length}</div><div class="kpi-sub">SKU ${filtered.length}개</div></div>
+      <div class="kpi-card yellow"><div class="kpi-label">평균 할인율</div><div class="kpi-value">${avgDisc.toFixed(1)}%</div></div>
+      <div class="kpi-card green"><div class="kpi-label">평균 마진율</div><div class="kpi-value">${avgMargin.toFixed(1)}%</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">국내 온라인 가격표 <span class="badge badge-blue">${agg.length}개 스타일</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>스타일넘버</th>
+              <th>상품명</th>
+              <th>카테고리</th>
+              <th class="td-num">정가</th>
+              <th class="td-num">상시판매가</th>
+              <th class="td-num">프로모션 판매가</th>
+              <th class="td-center">할인율</th>
+              <th class="td-num">원가</th>
+              <th class="td-num">원가율</th>
+              <th class="td-num">마진</th>
+              <th class="td-num">마진율</th>
+              <th>프로모션</th>
+              <th>기간</th>
+              <th>컬러</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${agg.length === 0 ? '<tr><td colspan="14" class="empty-row">검색 결과가 없습니다.</td></tr>' :
+              agg.map(r => `
+                <tr>
+                  <td style="font-family:monospace;font-size:12px;color:var(--text-muted)">${r.styleNum}</td>
+                  <td style="max-width:200px;white-space:normal">${r.name}</td>
+                  <td><span class="cat-pill">${r.category}</span></td>
+                  <td class="td-num">${fmt(r.tagPrice,'원')}</td>
+                  <td class="td-num">${fmt(r.normalPrice,'원')}</td>
+                  <td class="td-num" style="font-weight:600">${fmt(r.salePrice,'원')}</td>
+                  <td class="td-center"><span class="disc ${discClass(r.discountRate)}">${r.discountRate}%</span></td>
+                  <td class="td-num">${fmt(r.cost,'원')}</td>
+                  <td class="td-num">${r.costRate.toFixed(1)}%</td>
+                  <td class="td-num">${fmt(r.margin,'원')}</td>
+                  <td class="td-num ${marginClass(r.marginRate)}">${r.marginRate.toFixed(1)}%</td>
+                  <td style="font-size:12px;color:var(--text-dim)">${r.promo}</td>
+                  <td style="font-size:12px;color:var(--text-muted)">${r.startDate}~${r.endDate}</td>
+                  <td style="font-size:11px;color:var(--text-muted)">${r.colors.join(', ')}</td>
+                </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('korea-content').innerHTML = html;
+}
+
+// ==================== JAPAN TAB ====================
+function renderJapanTab() {
+  const season = document.getElementById('jp-season-filter').value;
+  const promo = document.getElementById('jp-promo-filter').value;
+  const search = document.getElementById('jp-search').value.toLowerCase();
+
+  let filtered = jpData.filter(r => {
+    if (season && r.season !== season) return false;
+    if (promo && r.promo !== promo) return false;
+    if (search && !r.name.toLowerCase().includes(search) && !r.styleNum.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  const agg = aggregateByStyle(filtered);
+  const avgDisc = agg.reduce((s,r)=>s+r.discountRate,0)/(agg.length||1);
+  const avgMargin = agg.reduce((s,r)=>s+r.marginRate,0)/(agg.length||1);
+  const avgMulti = agg.reduce((s,r)=>s+r.finalMulti,0)/(agg.length||1);
+
+  let html = `
+    <div class="kpi-grid" style="margin-bottom:20px">
+      <div class="kpi-card red"><div class="kpi-label">표시 제품 수</div><div class="kpi-value">${agg.length}</div><div class="kpi-sub">SKU ${filtered.length}개</div></div>
+      <div class="kpi-card yellow"><div class="kpi-label">평균 할인율 (JPY)</div><div class="kpi-value">${avgDisc.toFixed(1)}%</div></div>
+      <div class="kpi-card green"><div class="kpi-label">평균 마진율</div><div class="kpi-value">${avgMargin.toFixed(1)}%</div></div>
+      <div class="kpi-card blue"><div class="kpi-label">평균 최종 배수</div><div class="kpi-value">${avgMulti.toFixed(2)}x</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">일본 가격표 <span class="badge badge-red">${agg.length}개 스타일</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>스타일넘버</th>
+              <th>상품명</th>
+              <th>카테고리</th>
+              <th class="td-num">JPY 정가</th>
+              <th class="td-num">JPY 판매가</th>
+              <th class="td-center">JPY 할인율</th>
+              <th class="td-num">KRW 환산판매가</th>
+              <th class="td-num">국내 정가</th>
+              <th class="td-num">원가</th>
+              <th class="td-num">원가율</th>
+              <th class="td-num">마진</th>
+              <th class="td-num">마진율</th>
+              <th class="td-num">최종배수</th>
+              <th>기간</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${agg.length === 0 ? '<tr><td colspan="14" class="empty-row">검색 결과가 없습니다.</td></tr>' :
+              agg.map(r => `
+                <tr>
+                  <td style="font-family:monospace;font-size:12px;color:var(--text-muted)">${r.styleNum}</td>
+                  <td style="max-width:200px;white-space:normal">${r.name}</td>
+                  <td><span class="cat-pill">${r.category}</span></td>
+                  <td class="td-num">¥${fmt(num(r.tagPriceJpy))}</td>
+                  <td class="td-num" style="font-weight:600">¥${fmt(num(r.salePriceJpy))}</td>
+                  <td class="td-center"><span class="disc ${discClass(r.discountRate)}">${r.discountRate}%</span></td>
+                  <td class="td-num">${fmt(r.salePriceKrw,'원')}</td>
+                  <td class="td-num">${fmt(r.tagPriceKrw,'원')}</td>
+                  <td class="td-num">${fmt(r.cost,'원')}</td>
+                  <td class="td-num">${r.costRate.toFixed(1)}%</td>
+                  <td class="td-num">${fmt(r.margin,'원')}</td>
+                  <td class="td-num ${marginClass(r.marginRate)}">${r.marginRate.toFixed(1)}%</td>
+                  <td class="td-num" style="color:var(--primary);font-weight:600">${r.finalMulti.toFixed(2)}x</td>
+                  <td style="font-size:12px;color:var(--text-muted)">${r.startDate}~${r.endDate}</td>
+                </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('japan-content').innerHTML = html;
+}
+
+// ==================== COMPARE TAB ====================
+function renderCompareTab() {
+  const krMap = new Map();
+  aggregateByStyle(krData).forEach(r => krMap.set(r.styleNum, r));
+  const jpMap = new Map();
+  aggregateByStyle(jpData).forEach(r => jpMap.set(r.styleNum, r));
+
+  const allStyles = [...new Set([...krMap.keys(), ...jpMap.keys()])];
+
+  let html = `
+    <div class="card-title" style="margin-bottom:16px">국내 vs 일본 가격 비교 <span class="badge badge-blue">${allStyles.length}개 스타일</span></div>
+    <div class="card">
+      <div class="compare-header">
+        <span class="compare-flag flag-kr">🇰🇷 국내 온라인</span>
+        <span style="color:var(--text-muted)">vs</span>
+        <span class="compare-flag flag-jp">🇯🇵 일본</span>
+        <span style="color:var(--text-muted);font-size:12px;margin-left:8px">* 일본 KRW 환산 = 프로모션 판매가 기준</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>스타일넘버</th>
+              <th>상품명</th>
+              <th>카테고리</th>
+              <th class="td-num">🇰🇷 정가</th>
+              <th class="td-num">🇰🇷 판매가</th>
+              <th class="td-center">🇰🇷 할인율</th>
+              <th class="td-num">🇰🇷 마진율</th>
+              <th class="td-num">🇯🇵 JPY정가</th>
+              <th class="td-num">🇯🇵 JPY판매가</th>
+              <th class="td-center">🇯🇵 할인율</th>
+              <th class="td-num">🇯🇵 KRW환산</th>
+              <th class="td-num">🇯🇵 마진율</th>
+              <th class="td-center">가격차</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${allStyles.map(style => {
+              const kr = krMap.get(style);
+              const jp = jpMap.get(style);
+              const priceDiff = (kr && jp) ? kr.salePrice - jp.salePriceKrw : null;
+              const diffClass = priceDiff === null ? '' : priceDiff > 0 ? 'price-diff-pos' : 'price-diff-neg';
+              const diffText = priceDiff === null ? '-' : (priceDiff > 0 ? `+${fmt(priceDiff)}` : fmt(priceDiff)) + '원';
+              return `
+                <tr>
+                  <td style="font-family:monospace;font-size:12px;color:var(--text-muted)">${style}</td>
+                  <td style="max-width:180px;white-space:normal">${kr ? kr.name : (jp ? jp.name : '')}</td>
+                  <td><span class="cat-pill">${kr ? kr.category : (jp ? jp.category : '')}</span></td>
+                  <td class="td-num">${kr ? fmt(kr.tagPrice,'원') : '-'}</td>
+                  <td class="td-num" style="font-weight:600">${kr ? fmt(kr.salePrice,'원') : '-'}</td>
+                  <td class="td-center">${kr ? `<span class="disc ${discClass(kr.discountRate)}">${kr.discountRate}%</span>` : '-'}</td>
+                  <td class="td-num ${kr ? marginClass(kr.marginRate) : ''}">${kr ? kr.marginRate.toFixed(1)+'%' : '-'}</td>
+                  <td class="td-num">${jp ? '¥'+fmt(num(jp.tagPriceJpy)) : '-'}</td>
+                  <td class="td-num" style="font-weight:600">${jp ? '¥'+fmt(num(jp.salePriceJpy)) : '-'}</td>
+                  <td class="td-center">${jp ? `<span class="disc ${discClass(jp.discountRate)}">${jp.discountRate}%</span>` : '-'}</td>
+                  <td class="td-num">${jp ? fmt(jp.salePriceKrw,'원') : '-'}</td>
+                  <td class="td-num ${jp ? marginClass(jp.marginRate) : ''}">${jp ? jp.marginRate.toFixed(1)+'%' : '-'}</td>
+                  <td class="td-num ${diffClass}">${diffText}</td>
+                </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('compare-content').innerHTML = html;
+}
+
+// ==================== STRATEGY TAB ====================
+function renderStrategyTab() {
+  const krAgg = aggregateByStyle(krData);
+  const jpAgg = aggregateByStyle(jpData);
+  const krMap = new Map(krAgg.map(r=>[r.styleNum,r]));
+  const jpMap = new Map(jpAgg.map(r=>[r.styleNum,r]));
+
+  // Analysis
+  const highDiscKr = krAgg.filter(r=>r.discountRate >= 30);
+  const zeroDiscKr = krAgg.filter(r=>r.discountRate === 0);
+  const lowMarginKr = krAgg.filter(r=>r.marginRate < 40 && r.marginRate > 0);
+  const highMarginKr = krAgg.filter(r=>r.marginRate >= 55);
+  const lowMarginJp = jpAgg.filter(r=>r.marginRate < 30 && r.marginRate > 0);
+
+  // Price parity check
+  const parityAlerts = [];
+  krAgg.forEach(kr => {
+    const jp = jpMap.get(kr.styleNum);
+    if (jp && jp.salePriceKrw > 0 && kr.salePrice > 0) {
+      const ratio = jp.salePriceKrw / kr.salePrice;
+      if (ratio < 0.85) parityAlerts.push({ name: kr.name, styleNum: kr.styleNum, kr: kr.salePrice, jp: jp.salePriceKrw, ratio });
+    }
+  });
+
+  // End dates for promotion planning
+  const promoEndDates = [...new Set([...krData,...jpData].map(r=>r.endDate).filter(Boolean))];
+  const latestEndDate = promoEndDates.sort().pop() || '';
+
+  // Parse current month
+  const today = new Date();
+  const nextMonth = new Date(today.getFullYear(), today.getMonth()+1, 1);
+  const monthAfter = new Date(today.getFullYear(), today.getMonth()+2, 1);
+  const nextMonthStr = `${nextMonth.getFullYear()}년 ${nextMonth.getMonth()+1}월`;
+  const monthAfterStr = `${monthAfter.getFullYear()}년 ${monthAfter.getMonth()+1}월`;
+
+  let html = `
+    <div class="section-header">
+      <div class="section-title">전략 계획 자동 추출</div>
+      <div style="color:var(--text-muted);font-size:13px">현재 시트 데이터 기반 자동 분석 · ${today.getFullYear()}년 ${today.getMonth()+1}월 기준</div>
+    </div>
+
+    <!-- 이번달 현황 요약 -->
+    <div class="strategy-grid">
+      <div class="strategy-card info">
+        <div class="strategy-title"><span class="icon">📊</span> 이번달 프로모션 현황</div>
+        ${[...new Set([...krData,...jpData].map(r=>r.promo).filter(Boolean))].map(promo => {
+          const krItems = krAgg.filter(r=>r.promo===promo);
+          const jpItems = jpAgg.filter(r=>r.promo===promo);
+          const avgKrD = krItems.reduce((s,r)=>s+r.discountRate,0)/(krItems.length||1);
+          const avgJpD = jpItems.reduce((s,r)=>s+r.discountRate,0)/(jpItems.length||1);
+          return `<div class="strategy-item">
+            <span class="dot dot-blue"></span>
+            <div>
+              <strong>${promo}</strong>
+              <br><span style="color:var(--text-dim);font-size:12px">
+                국내 ${krItems.length}개 스타일 / 평균할인 ${avgKrD.toFixed(0)}%<br>
+                일본 ${jpItems.length}개 스타일 / 평균할인 ${avgJpD.toFixed(0)}%<br>
+                프로모션 종료: ${latestEndDate}
+              </span>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <div class="strategy-card warn">
+        <div class="strategy-title"><span class="icon">⚠️</span> 마진율 주의 품목 (국내 &lt;40%)</div>
+        ${lowMarginKr.length === 0 ? '<div style="color:var(--text-muted);font-size:13px">주의 품목 없음</div>' :
+          lowMarginKr.slice(0,6).map(r=>`<div class="strategy-item">
+            <span class="dot dot-yellow"></span>
+            <div>
+              <strong>${r.name.replace('어반사이드 ','')}</strong>
+              <span class="strategy-tag" style="background:#3d3010;color:var(--accent-yellow)">마진 ${r.marginRate.toFixed(1)}%</span>
+              <span class="strategy-tag" style="background:#1a2a5e;color:var(--primary)">할인 ${r.discountRate}%</span>
+              <br><span style="color:var(--text-muted);font-size:11px">${r.styleNum}</span>
+            </div>
+          </div>`).join('')}
+        ${lowMarginKr.length > 6 ? `<div style="color:var(--text-muted);font-size:12px;padding-top:8px">외 ${lowMarginKr.length-6}개 품목</div>` : ''}
+      </div>
+
+      <div class="strategy-card alert">
+        <div class="strategy-title"><span class="icon">🔴</span> 일본 저마진 주의 (&lt;30%)</div>
+        ${lowMarginJp.length === 0 ? '<div style="color:var(--text-muted);font-size:13px">주의 품목 없음</div>' :
+          lowMarginJp.slice(0,6).map(r=>`<div class="strategy-item">
+            <span class="dot dot-red"></span>
+            <div>
+              <strong>${r.name.replace('어반사이드 ','')}</strong>
+              <span class="strategy-tag" style="background:#3d1a26;color:var(--accent)">마진 ${r.marginRate.toFixed(1)}%</span>
+              <span class="strategy-tag" style="background:#3d3010;color:var(--accent-yellow)">할인 ${r.discountRate}%</span>
+              <br><span style="color:var(--text-muted);font-size:11px">${r.styleNum} / ¥${fmt(num(r.salePriceJpy))} → ${fmt(r.salePriceKrw,'원')}</span>
+            </div>
+          </div>`).join('')}
+        ${lowMarginJp.length === 0 ? '' : ''}
+      </div>
+
+      <div class="strategy-card good">
+        <div class="strategy-title"><span class="icon">✅</span> 고마진 여유 품목 (국내 ≥55%)</div>
+        ${highMarginKr.length === 0 ? '<div style="color:var(--text-muted);font-size:13px">해당 품목 없음</div>' :
+          highMarginKr.slice(0,6).map(r=>`<div class="strategy-item">
+            <span class="dot dot-green"></span>
+            <div>
+              <strong>${r.name.replace('어반사이드 ','')}</strong>
+              <span class="strategy-tag" style="background:#1a3d30;color:var(--accent-green)">마진 ${r.marginRate.toFixed(1)}%</span>
+              <br><span style="color:var(--text-muted);font-size:11px">할인 여력 있음 · ${r.styleNum}</span>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- 다음달 전략 -->
+    <div class="card">
+      <div class="card-title">📅 ${nextMonthStr} 전략 제안 (자동 추출)</div>
+      <div class="strategy-grid" style="margin-top:0">
+        <div class="strategy-card info">
+          <div class="strategy-title"><span class="icon">🎯</span> 프로모션 추천 대상</div>
+          <div class="strategy-item" style="flex-direction:column;gap:4px">
+            <span style="color:var(--text-dim);font-size:12px;margin-bottom:4px">현재 0% 할인 → ${nextMonthStr} 프로모션 추천</span>
+            ${zeroDiscKr.slice(0,5).map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)">
+              <span style="font-size:13px">${r.name.replace('어반사이드 ','').substring(0,18)}</span>
+              <span class="strategy-tag" style="background:#1a3d30;color:var(--accent-green)">마진 ${r.marginRate.toFixed(0)}%</span>
+            </div>`).join('')}
+            ${zeroDiscKr.length > 5 ? `<span style="color:var(--text-muted);font-size:11px">+ ${zeroDiscKr.length-5}개 품목</span>` : ''}
+          </div>
+        </div>
+
+        <div class="strategy-card warn">
+          <div class="strategy-title"><span class="icon">📉</span> 할인 축소 검토 대상</div>
+          <div class="strategy-item" style="flex-direction:column;gap:4px">
+            <span style="color:var(--text-dim);font-size:12px;margin-bottom:4px">현재 ≥30% 고할인 + 마진&lt;50% 품목</span>
+            ${highDiscKr.filter(r=>r.marginRate<50).slice(0,5).map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)">
+              <span style="font-size:13px">${r.name.replace('어반사이드 ','').substring(0,16)}</span>
+              <span><span class="disc ${discClass(r.discountRate)}">${r.discountRate}%</span> <span style="color:var(--accent);font-size:11px">${r.marginRate.toFixed(0)}%</span></span>
+            </div>`).join('')}
+          </div>
+        </div>
+
+        <div class="strategy-card good">
+          <div class="strategy-title"><span class="icon">🌏</span> 일본 가격 정합성 체크</div>
+          ${parityAlerts.length === 0 ?
+            '<div class="strategy-item"><span class="dot dot-green"></span><span>국내 대비 일본 가격 정합성 양호</span></div>' :
+            parityAlerts.slice(0,4).map(r=>`<div class="strategy-item">
+              <span class="dot dot-red"></span>
+              <div>
+                <strong style="font-size:12px">${r.name.replace('어반사이드 ','').substring(0,16)}</strong><br>
+                <span style="font-size:11px;color:var(--text-muted)">국내 ${fmt(r.kr,'원')} vs 일본(환산) ${fmt(r.jp,'원')}</span><br>
+                <span style="color:var(--accent);font-size:11px">일본이 ${(100-r.ratio*100).toFixed(0)}% 저렴 → 가격 검토 필요</span>
+              </div>
+            </div>`).join('')
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- 다다음달 전략 -->
+    <div class="card">
+      <div class="card-title">📅 ${monthAfterStr} 전략 제안 (자동 추출)</div>
+      <div class="strategy-grid" style="margin-top:0">
+        <div class="strategy-card info">
+          <div class="strategy-title"><span class="icon">📦</span> 시즌 전환 준비</div>
+          ${[...new Set([...krData,...jpData].map(r=>r.season))].map(season=>`
+            <div class="strategy-item">
+              <span class="dot dot-blue"></span>
+              <div>
+                <strong>${season} 시즌</strong> — 국내 ${krAgg.filter(r=>r.season===season).length}개 / 일본 ${jpAgg.filter(r=>r.season===season).length}개<br>
+                <span style="color:var(--text-muted);font-size:12px">${monthAfterStr} 이후 재고 처리 또는 정가 판매 전환 검토</span>
+              </div>
+            </div>`).join('')}
+        </div>
+        <div class="strategy-card warn">
+          <div class="strategy-title"><span class="icon">💡</span> ${monthAfterStr} 가격 전략 시나리오</div>
+          <div class="strategy-item"><span class="dot dot-yellow"></span><div><strong>재킷류</strong> — 시즌 종료 전 재고 소진 목적 추가 할인 (최대 35~40%) 검토<br><span style="color:var(--text-muted);font-size:12px">마진 확인 후 5~10%p 추가 할인 여력 있는 품목 우선 적용</span></div></div>
+          <div class="strategy-item"><span class="dot dot-green"></span><div><strong>팬츠/쇼츠</strong> — 하절기 수요 지속 예상, 현행 할인율 유지 또는 소폭 조정<br><span style="color:var(--text-muted);font-size:12px">마진율 높은 품목 정가 복귀 우선 고려</span></div></div>
+          <div class="strategy-item"><span class="dot dot-blue"></span><div><strong>티셔츠류</strong> — 상시 판매 품목, 프로모션 종료 후 상시판매가 전환<br><span style="color:var(--text-muted);font-size:12px">일본 가격과의 정합성 재확인</span></div></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('strategy-content').innerHTML = html;
+}
+
+// ==================== TABS ====================
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['overview','korea','japan','compare','strategy'][i] === id));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+}
+
+// ==================== INIT ====================
+loadAllData();
+</script>
+</body>
+</html>
