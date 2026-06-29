@@ -361,9 +361,10 @@ function parseSell(rows){
     const exchange=num(r['교환']||r[rawKeys[9]]);
     const returns=num(r['반품']||r[rawKeys[10]]);
     const retRate=pct(r['(교환+반품)/주문 비율']||r[rawKeys[11]]);
-    // Extract style base from code (remove color suffix)
-    const styleBase=code.replace(/-[A-Z]{3,4}-\d{3}(-OS)?$/,'').replace(/-[A-Z]{3}-\d{3}(-OS)?$/,'');
-    return {fullName,name,code,styleBase,season,line,prod,order,remain,sellRate,exchange,returns,retRate};
+    // Normalize code: strip embedded color letters before the trailing -NNN number
+    // e.g. "PL26S-FX4BLK-001" → "PL26S-FX4-001", "AC26S-CT2GRN-001-OS" → "AC26S-CT2-001"
+    const normalCode=code.replace(/-OS$/i,'').replace(/[A-Z]{2,4}(-\d{3})$/,'$1');
+    return {fullName,name,code,normalCode,season,line,prod,order,remain,sellRate,exchange,returns,retRate};
   }).filter(r=>r&&r.name&&r.season==='26SS');
 }
 
@@ -394,9 +395,8 @@ function matchSell(styleNum, items){
 }
 
 function getSellGroup(styleNum, items){
-  // Get all sell records for this style (all colors)
-  const base=styleNum.replace(/-\d{3}$/,'');
-  const matches=items.filter(s=>s.code&&s.code.replace(/-[A-Z]{3,4}-\d{3}(-OS)?$/,'')===styleNum||s.code.includes(base));
+  // Match by normalCode exact — avoids cross-product collision (e.g. -001 vs -003 sharing same base)
+  const matches=items.filter(s=>s.normalCode===styleNum);
   if(matches.length===0) return null;
   return {
     prod:matches.reduce((s,r)=>s+r.prod,0),
