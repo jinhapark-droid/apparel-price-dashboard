@@ -193,6 +193,64 @@
     .highlight-row td { background: #0d1a2d !important; }
     .parity-alert { color: var(--accent); font-size: 11px; }
     .parity-ok { color: var(--green); font-size: 11px; }
+
+    /* PRICING PRINCIPLES PANEL */
+    .principles-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; margin-bottom: 22px; }
+    .principles-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; cursor: pointer; user-select: none; }
+    .principles-title { font-size: 13px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+    .principles-title::before { content: ''; width: 3px; height: 14px; background: var(--primary); border-radius: 2px; display: inline-block; }
+    .principles-toggle { font-size: 11px; color: var(--text-muted); }
+    .principles-body { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    @media (max-width: 900px) { .principles-body { grid-template-columns: 1fr; } }
+
+    /* Discount spectrum */
+    .disc-spectrum { display: flex; flex-direction: column; gap: 8px; }
+    .disc-spectrum-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 4px; }
+    .disc-level { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px; border: 1px solid; position: relative; overflow: hidden; }
+    .disc-level::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+    .disc-level.lv0 { background: #0a1f12; border-color: #1a4028; }
+    .disc-level.lv0::before { background: var(--green); }
+    .disc-level.lv1 { background: #0a1020; border-color: #1a2a50; }
+    .disc-level.lv1::before { background: var(--primary); }
+    .disc-level.lv2 { background: #1a1400; border-color: #3a2e00; }
+    .disc-level.lv2::before { background: var(--yellow); }
+    .disc-level.lv3 { background: #1a0e00; border-color: #3a2000; }
+    .disc-level.lv3::before { background: var(--orange); }
+    .disc-level.lv4 { background: #1a0408; border-color: #3a0a12; }
+    .disc-level.lv4::before { background: var(--accent); }
+    .disc-level-range { font-size: 13px; font-weight: 800; font-family: monospace; width: 56px; flex-shrink: 0; }
+    .disc-level-info { flex: 1; }
+    .disc-level-name { font-size: 12px; font-weight: 700; line-height: 1.2; }
+    .disc-level-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; line-height: 1.3; }
+    .disc-level-tag { flex-shrink: 0; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+    .tag-safe { background: #0d3020; color: var(--green); }
+    .tag-watch { background: #2d2000; color: var(--yellow); }
+    .tag-risk { background: #2d0d00; color: var(--orange); }
+    .tag-danger { background: #2d0010; color: var(--accent); }
+
+    /* Margin gauge */
+    .mg-gauge-wrap { display: flex; flex-direction: column; gap: 12px; }
+    .mg-gauge-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .8px; }
+    .mg-gauge { position: relative; height: 20px; background: linear-gradient(to right, #3d0a14 0%, #7d3a00 25%, #2d3a00 50%, #0a3020 100%); border-radius: 10px; overflow: visible; margin: 4px 0 18px; }
+    .mg-gauge-marker { position: absolute; top: -6px; transform: translateX(-50%); }
+    .mg-gauge-marker-line { width: 2px; height: 32px; background: #fff; border-radius: 1px; }
+    .mg-gauge-marker-label { font-size: 10px; font-weight: 700; color: #fff; white-space: nowrap; margin-top: 2px; text-align: center; transform: translateX(-50%); position: absolute; left: 50%; }
+    .mg-gauge-ticks { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+    .mg-stat-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); }
+    .mg-stat-row:last-child { border-bottom: none; }
+    .mg-stat-label { font-size: 12px; color: var(--text-dim); }
+    .mg-stat-val { font-size: 13px; font-weight: 800; font-family: monospace; }
+
+    /* Revenue share guide */
+    .revshare-wrap { display: flex; flex-direction: column; gap: 10px; }
+    .revshare-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .8px; }
+    .revshare-bar-wrap { position: relative; padding-bottom: 24px; margin: 8px 0 4px; }
+    .revshare-bar-bg { height: 18px; border-radius: 9px; background: linear-gradient(to right, var(--green) 0%, var(--green) 30%, var(--yellow) 50%, var(--orange) 75%, var(--accent) 100%); opacity: .25; }
+    .revshare-zone { position: absolute; top: 0; height: 18px; background: var(--green); border-radius: 9px; opacity: .5; }
+    .revshare-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+    .revshare-recommended { font-size: 12px; color: var(--green); font-weight: 700; text-align: center; background: #0a2016; border-radius: 8px; padding: 8px 12px; border: 1px solid #1a5030; margin-top: 4px; }
+    .principle-note { background: var(--surface2); border-radius: 8px; padding: 10px 12px; font-size: 12px; color: var(--text-dim); line-height: 1.6; border-left: 3px solid var(--border); }
+    .principle-note strong { color: var(--text); }
   </style>
 </head>
 <body>
@@ -438,6 +496,147 @@ function renderAlerts(){
 // ============================================================
 // TAB: 26SS 현황
 // ============================================================
+function renderPrinciples(avgKrMg, avgKrDisc, avgJpMg){
+  // Margin gauge: 0~80%, key markers at 30% (minimum), 40% (ok), 55% (good)
+  const krMgPct = Math.min(Math.max(avgKrMg, 0), 80) / 80 * 100;
+  const jpMgPct = Math.min(Math.max(avgJpMg, 0), 80) / 80 * 100;
+  const targetPct = 30/80*100; // 권장 최저 마진
+  return `
+  <div class="principles-panel" id="principlesPanel">
+    <div class="principles-header" onclick="togglePrinciples()">
+      <div class="principles-title">📐 26SS 가격 운용 원칙</div>
+      <div class="principles-toggle" id="principlesToggle">▾ 접기</div>
+    </div>
+    <div class="principles-body" id="principlesBody">
+
+      <!-- 할인 스펙트럼 -->
+      <div class="disc-spectrum">
+        <div class="disc-spectrum-title">할인율 운용 스펙트럼</div>
+        <div class="disc-level lv0">
+          <div class="disc-level-range c-green">0%</div>
+          <div class="disc-level-info">
+            <div class="disc-level-name">정가 판매</div>
+            <div class="disc-level-desc">자사몰 기준가 · 시즌 초기 전략</div>
+          </div>
+          <div class="disc-level-tag tag-safe">권장</div>
+        </div>
+        <div class="disc-level lv1">
+          <div class="disc-level-range c-blue">~15%</div>
+          <div class="disc-level-info">
+            <div class="disc-level-name">쿠폰 · 적립금 · 소셜 코드</div>
+            <div class="disc-level-desc">회원 대상 % 할인코드 · 인스타 코드</div>
+          </div>
+          <div class="disc-level-tag tag-safe">안전</div>
+        </div>
+        <div class="disc-level lv2">
+          <div class="disc-level-range c-yellow">~25%</div>
+          <div class="disc-level-info">
+            <div class="disc-level-name">시즌 프로모션 · 기획전</div>
+            <div class="disc-level-desc">공식 세일 · 플랫폼 기획전 참여</div>
+          </div>
+          <div class="disc-level-tag tag-watch">주의</div>
+        </div>
+        <div class="disc-level lv3">
+          <div class="disc-level-range c-orange">~35%</div>
+          <div class="disc-level-info">
+            <div class="disc-level-name">매출쉐어 · 재고 소진 세일</div>
+            <div class="disc-level-desc">5~10% 매출쉐어 적정 제안 구간</div>
+          </div>
+          <div class="disc-level-tag tag-risk">리스크</div>
+        </div>
+        <div class="disc-level lv4">
+          <div class="disc-level-range c-red">35%+</div>
+          <div class="disc-level-info">
+            <div class="disc-level-name">긴급 소진 · 이월 처리</div>
+            <div class="disc-level-desc">마진 훼손 구간 — 사전 승인 필요</div>
+          </div>
+          <div class="disc-level-tag tag-danger">위험</div>
+        </div>
+      </div>
+
+      <!-- 마진 기준선 -->
+      <div class="mg-gauge-wrap">
+        <div class="mg-gauge-title">마진율 기준선 모니터링</div>
+        <div class="mg-gauge" id="mgGauge">
+          <!-- 권장 최저선 30% marker -->
+          <div class="mg-gauge-marker" style="left:${targetPct}%">
+            <div class="mg-gauge-marker-line"></div>
+            <div class="mg-gauge-marker-label" style="top:22px;color:var(--yellow)">권장 최저<br>30%</div>
+          </div>
+          <!-- 국내 현재값 -->
+          <div class="mg-gauge-marker" style="left:${krMgPct}%">
+            <div class="mg-gauge-marker-line" style="background:var(--primary)"></div>
+            <div class="mg-gauge-marker-label" style="top:-30px;color:var(--primary)">🇰🇷 ${avgKrMg.toFixed(1)}%</div>
+          </div>
+          <!-- 일본 현재값 -->
+          <div class="mg-gauge-marker" style="left:${jpMgPct}%">
+            <div class="mg-gauge-marker-line" style="background:var(--purple)"></div>
+            <div class="mg-gauge-marker-label" style="top:-30px;color:var(--purple)">🇯🇵 ${avgJpMg.toFixed(1)}%</div>
+          </div>
+        </div>
+        <div class="mg-gauge-ticks" style="margin-top:30px">
+          <span>0%</span><span>20%</span><span>40%</span><span>60%</span><span>80%</span>
+        </div>
+        <div class="mg-stat-row" style="margin-top:12px">
+          <div class="mg-stat-label">🇰🇷 국내 평균 마진율</div>
+          <div class="mg-stat-val ${avgKrMg>=30?'c-green':'c-red'}">${avgKrMg.toFixed(1)}%</div>
+        </div>
+        <div class="mg-stat-row">
+          <div class="mg-stat-label">🇯🇵 일본 평균 마진율</div>
+          <div class="mg-stat-val ${avgJpMg>=30?'c-green':'c-red'}">${avgJpMg.toFixed(1)}%</div>
+        </div>
+        <div class="mg-stat-row">
+          <div class="mg-stat-label">📌 사측 권장 최저 마진율</div>
+          <div class="mg-stat-val c-yellow">30.0%</div>
+        </div>
+        <div class="mg-stat-row">
+          <div class="mg-stat-label">🇰🇷 국내 평균 현재 할인율</div>
+          <div class="mg-stat-val ${discClass(avgKrDisc)==='d0'||discClass(avgKrDisc)==='d1'?'c-green':discClass(avgKrDisc)==='d2'?'c-yellow':'c-red'}">${avgKrDisc.toFixed(1)}%</div>
+        </div>
+      </div>
+
+      <!-- 매출쉐어 가이드 -->
+      <div class="revshare-wrap">
+        <div class="revshare-title">매출쉐어 & 채널 수수료 가이드</div>
+        <div class="revshare-bar-wrap">
+          <div class="revshare-bar-bg"></div>
+          <!-- 5~10% 권장 구간 강조 (0~20% 스케일) -->
+          <div class="revshare-zone" style="left:25%;width:25%"></div>
+          <div class="revshare-labels">
+            <span>0%</span><span>5%</span><span>10%</span><span>15%</span><span>20%+</span>
+          </div>
+        </div>
+        <div class="revshare-recommended">✅ 매출쉐어 권장 구간: <strong>5 ~ 10%</strong></div>
+        <div class="principle-note" style="margin-top:10px">
+          <strong>플랫폼 채널 수수료 참고</strong><br>
+          자사몰(카페24) ~3% · 무신사 약 25~35%<br>
+          29CM 약 25~30% · 하고 약 30~35%<br>
+          수수료 포함 실질 마진 30% 이상 유지 권장
+        </div>
+        <div class="principle-note" style="margin-top:8px">
+          <strong>할인코드 운용 원칙</strong><br>
+          SNS/인플루언서 코드 최대 <strong>10%</strong><br>
+          매출쉐어 제안 시 <strong>5~10%</strong> 선에서 제안<br>
+          정가 대비 20% 초과 시 내부 검토 필요
+        </div>
+      </div>
+
+    </div>
+  </div>`;
+}
+
+function togglePrinciples(){
+  const body=document.getElementById('principlesBody');
+  const toggle=document.getElementById('principlesToggle');
+  if(body.style.display==='none'){
+    body.style.display='grid';
+    toggle.textContent='▾ 접기';
+  } else {
+    body.style.display='none';
+    toggle.textContent='▸ 펼치기';
+  }
+}
+
 function renderSummary(){
   const kr26=dedupe(krData.filter(r=>r.season==='26SS'));
   const jp26=dedupe(jpData.filter(r=>r.season==='26SS'));
@@ -454,7 +653,7 @@ function renderSummary(){
   const krPromoPeriods=[...new Map(krData.filter(r=>r.season==='26SS').map(r=>[r.promo,r])).values()];
   const jpPromoPeriods=[...new Map(jpData.filter(r=>r.season==='26SS').map(r=>[r.promo,r])).values()];
 
-  let html=`
+  let html=renderPrinciples(avgKrMg, avgKrDisc, avgJpMg)+`
     <div class="kpi-row">
       <div class="kpi"><div class="kpi-label">국내 스타일 수</div><div class="kpi-val c-blue">${kr26.length}</div><div class="kpi-sub">26SS</div></div>
       <div class="kpi"><div class="kpi-label">국내 평균 할인율</div><div class="kpi-val c-yellow">${fmtP(avgKrDisc)}</div><div class="kpi-sub">정가 대비</div></div>
