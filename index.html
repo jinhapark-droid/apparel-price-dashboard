@@ -195,81 +195,63 @@
     .parity-ok { color: var(--green); font-size: 11px; }
 
     /* ============================================================
-       SIMULATOR TAB STYLES
+       SIMULATOR TAB STYLES — full-season view
     ============================================================ */
-    .sim-layout { display: grid; grid-template-columns: 400px 1fr; gap: 24px; align-items: start; }
-    @media (max-width: 1100px) { .sim-layout { grid-template-columns: 1fr; } }
 
-    /* Input panel */
-    .sim-inputs { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; position: sticky; top: 70px; }
-    .sim-section-title { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 12px; display: flex; align-items: center; gap: 8px; }
-    .sim-section-title:first-child { margin-top: 0; }
-    .sim-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-    .sim-field { margin-bottom: 14px; }
-    .sim-label { font-size: 12px; font-weight: 600; color: var(--text-dim); margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
-    .sim-label-hint { font-size: 11px; color: var(--text-muted); font-weight: 400; }
-    .sim-input { width: 100%; background: var(--surface2); border: 1.5px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 9px; font-size: 15px; font-weight: 700; outline: none; transition: border-color .15s; }
-    .sim-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,110,248,.12); }
-    .sim-input-prefix { position: relative; }
-    .sim-input-prefix input { padding-left: 36px; }
-    .sim-input-prefix .prefix { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 13px; font-weight: 600; pointer-events: none; }
+    /* Sticky control bar */
+    .sim-ctrl-bar { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px 24px; margin-bottom: 20px; position: sticky; top: 58px; z-index: 100; box-shadow: 0 4px 20px rgba(60,80,160,.10); }
+    .sim-ctrl-top { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; margin-bottom: 14px; }
+    .sim-ctrl-block { display: flex; flex-direction: column; gap: 6px; }
+    .sim-ctrl-block.grow { flex: 1; min-width: 180px; }
+    .sim-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .7px; }
+    .sim-label-hint { font-size: 11px; color: var(--text-muted); font-weight: 400; text-transform: none; letter-spacing: 0; }
 
     /* Slider */
-    .sim-slider-wrap { display: flex; flex-direction: column; gap: 6px; }
-    .sim-slider-row { display: flex; align-items: center; gap: 12px; }
-    .sim-slider { flex: 1; -webkit-appearance: none; height: 6px; border-radius: 3px; background: var(--border); outline: none; cursor: pointer; }
-    .sim-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); border: 3px solid white; box-shadow: 0 1px 6px rgba(59,110,248,.4); cursor: pointer; }
-    .sim-slider-val { font-size: 18px; font-weight: 900; font-family: monospace; min-width: 54px; text-align: right; color: var(--primary); }
-    .sim-slider-ticks { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); padding: 0 2px; }
+    .sim-slider-row { display: flex; align-items: center; gap: 10px; }
+    .sim-slider { flex: 1; -webkit-appearance: none; height: 6px; border-radius: 3px; background: var(--border); outline: none; cursor: pointer; min-width: 100px; }
+    .sim-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); border: 3px solid white; box-shadow: 0 1px 6px rgba(59,110,248,.35); cursor: pointer; }
+    .sim-slider-val { font-size: 20px; font-weight: 900; font-family: monospace; min-width: 52px; text-align: right; color: var(--primary); }
+    .sim-slider-val.rs { color: var(--purple); }
 
-    /* Preset chips */
-    .preset-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-    .preset-chip { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border); background: var(--surface2); color: var(--text-dim); transition: all .15s; white-space: nowrap; }
+    /* Fee chips */
+    .preset-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .preset-chip { padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border); background: var(--surface2); color: var(--text-dim); transition: all .12s; white-space: nowrap; }
     .preset-chip:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-dim); }
     .preset-chip.active { background: var(--primary); border-color: var(--primary); color: white; }
 
-    /* Result panel */
-    .sim-results { display: flex; flex-direction: column; gap: 16px; }
+    /* Scenario preset row */
+    .sim-scenario-chips { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 4px; border-top: 1px solid var(--border); }
+    .sim-scenario-chip { padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border); background: var(--surface2); color: var(--text-dim); transition: all .12s; white-space: nowrap; }
+    .sim-scenario-chip:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-dim); }
+    .sim-scenario-chip.active { background: var(--primary); border-color: var(--primary); color: white; }
 
-    /* Big result card */
-    .sim-result-main { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 24px; }
-    .sim-result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
-    .sim-result-item { text-align: center; padding: 16px; background: var(--surface2); border-radius: 10px; border: 1px solid var(--border); }
-    .sim-result-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 6px; }
-    .sim-result-val { font-size: 28px; font-weight: 900; font-family: monospace; line-height: 1.1; }
-    .sim-result-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+    /* KPI summary strip */
+    .sim-kpi-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; margin-bottom: 20px; }
+    .sim-kpi { background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+    .sim-kpi-label { font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: .6px; margin-bottom: 6px; }
+    .sim-kpi-val { font-size: 26px; font-weight: 900; font-family: monospace; line-height: 1.1; }
+    .sim-kpi-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
 
-    /* Margin bar */
-    .sim-mg-bar-wrap { margin-top: 4px; }
-    .sim-mg-bar-track { height: 12px; border-radius: 6px; background: var(--surface3); position: relative; overflow: hidden; }
-    .sim-mg-bar-fill { height: 100%; border-radius: 6px; transition: width .4s ease, background .4s; }
-    .sim-mg-bar-target { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--text-dim); }
-    .sim-mg-bar-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-top: 4px; }
-    .sim-mg-verdict { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 9px; font-size: 13px; font-weight: 700; margin-top: 14px; }
+    /* Product table card */
+    .sim-table-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .sim-table-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .sim-table-title { font-size: 14px; font-weight: 800; }
+
+    /* Inline margin bar in table */
+    .mg-cell { display: flex; align-items: center; gap: 8px; }
+    .mg-mini-bar { height: 6px; background: var(--border); border-radius: 3px; width: 60px; overflow: hidden; flex-shrink: 0; }
+    .mg-mini-fill { height: 100%; border-radius: 3px; }
+    .mg-val { font-size: 13px; font-weight: 800; font-family: monospace; min-width: 44px; text-align: right; }
+
+    /* Verdict badge */
+    .sim-mg-verdict { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 9px; font-size: 13px; font-weight: 700; }
     .verdict-ok { background: #e8f9f0; color: #0a7a44; border: 1px solid #9adec1; }
     .verdict-warn { background: #fffbec; color: #9a6800; border: 1px solid #f0d070; }
     .verdict-danger { background: #fff0f3; color: #c01030; border: 1px solid #f0a0b0; }
 
-    /* Breakdown table */
-    .sim-breakdown { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px 24px; }
-    .sim-breakdown-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); }
-    .sim-breakdown-row:last-child { border-bottom: none; font-weight: 800; font-size: 15px; }
-    .sim-breakdown-label { font-size: 13px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
-    .sim-breakdown-val { font-size: 13px; font-weight: 700; font-family: monospace; }
+    /* Scenario comparison chips (reused preset-chip styles above) */
     .sim-breakdown-neg { color: var(--accent); }
     .sim-breakdown-pos { color: var(--green); }
-
-    /* Scenario comparison */
-    .sim-scenarios { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px 24px; }
-    .scenario-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 9px; border: 1px solid var(--border); background: var(--surface2); margin-bottom: 8px; cursor: pointer; transition: all .15s; }
-    .scenario-row:hover { border-color: var(--primary); background: var(--primary-dim); }
-    .scenario-row.selected { border-color: var(--primary); background: var(--primary-dim); }
-    .scenario-name { font-size: 13px; font-weight: 700; flex: 1; }
-    .scenario-disc { font-size: 12px; font-family: monospace; font-weight: 700; }
-    .scenario-mg { font-size: 14px; font-weight: 900; font-family: monospace; }
-    .scenario-bar { flex: 2; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
-    .scenario-bar-fill { height: 100%; border-radius: 4px; }
 
     /* PRICING PRINCIPLES PANEL */
     .principles-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; margin-bottom: 22px; }
@@ -444,7 +426,8 @@ function parseKR(rows){
     const name=r['상품명']||r['제품']||'';
     if(!name) return null;
     const styleNum=r['스타일넘버']||'';
-    const tagPrice=num(r['정가 TAG PRICE']||r['TAG PRICE']);
+    const tagKey=keys.find(k=>k.includes('정가')&&k.includes('TAG'))||keys.find(k=>k.includes('TAG PRICE'))||'';
+    const tagPrice=num(tagKey?r[tagKey]:0);
     const salePrice=num(r['판매가']);
     const normalPrice=num(r['상시판매가']);
     const discKey=keys.find(k=>k.includes('마케팅')&&k.includes('할인율'))||'';
@@ -1218,274 +1201,196 @@ const SIM_PRESETS = [
   { name:'세일 30%', disc:30, revShare:0 },
 ];
 
+function simCompute(tag, cost, fee, disc, revShare){
+  const salePrice = tag * (1 - disc/100);
+  const feeAmt = salePrice * (fee/100);
+  const revShareAmt = salePrice * (revShare/100);
+  const marginAmt = salePrice - feeAmt - revShareAmt - cost;
+  const marginRate = salePrice > 0 ? marginAmt / salePrice * 100 : 0;
+  return { salePrice, feeAmt, revShareAmt, discAmt: tag - salePrice, marginAmt, marginRate };
+}
+
 function renderSimulator(){
-  const kr26=dedupe(krData.filter(r=>r.season==='26SS'));
-  const itemOpts=kr26.map((r,i)=>`<option value="${i}">${r.name.replace('어반사이드 ','')} (정가 ${fmt(r.tagPrice)}원)</option>`).join('');
+  const presetChips = SIM_PRESETS.map((p,i) =>
+    `<div class="sim-scenario-chip" id="schip_${i}" onclick="simApplyPreset(${i})">${p.name}<span style="font-size:10px;opacity:.7;margin-left:4px">${p.disc?p.disc+'%할인':''}${p.disc&&p.revShare?' · ':''}${p.revShare?'쉐어'+p.revShare+'%':''}</span></div>`
+  ).join('');
 
-  const html=`
-  <div style="margin-bottom:20px">
-    <div style="font-size:22px;font-weight:900;margin-bottom:4px">🧮 마진 시뮬레이터</div>
-    <div style="font-size:13px;color:var(--text-dim)">할인코드 % · 매출쉐어 % · 채널 수수료를 조합해서 실제 마진을 실시간으로 확인하세요.</div>
-  </div>
-
-  <div class="sim-layout">
-    <!-- LEFT: 입력 패널 -->
-    <div class="sim-inputs">
-      <div class="sim-section-title">제품 선택 또는 직접 입력</div>
-
-      <div class="sim-field">
-        <div class="sim-label">26SS 품목에서 불러오기 <span class="sim-label-hint">선택 시 자동 입력</span></div>
-        <select id="simItemSelect" class="sim-input" style="font-size:13px;font-weight:600" onchange="simLoadItem()">
-          <option value="">— 직접 입력 —</option>
-          ${itemOpts}
-        </select>
+  const html = `
+  <!-- ① 고정 컨트롤 바 -->
+  <div class="sim-ctrl-bar">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div>
+        <div style="font-size:18px;font-weight:900">🧮 26SS 전품목 마진 시뮬레이터</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px">슬라이더를 움직이면 전 품목 마진이 실시간 반영됩니다</div>
       </div>
+      <div id="sim_verdict_strip"></div>
+    </div>
 
-      <div class="sim-field">
-        <div class="sim-label">정가 (TAG PRICE)</div>
-        <div class="sim-input-prefix">
-          <span class="prefix">₩</span>
-          <input type="number" id="simTagPrice" class="sim-input" value="89000" step="1000" oninput="simCalc()">
+    <div class="sim-ctrl-top">
+      <!-- 채널 수수료 -->
+      <div class="sim-ctrl-block">
+        <div class="sim-label">채널 수수료</div>
+        <div class="preset-row">
+          <div class="preset-chip active" id="fee_chip_3" onclick="simSetFee(3,this)">자사몰 3%</div>
+          <div class="preset-chip" id="fee_chip_25" onclick="simSetFee(25,this)">무신사 25%</div>
+          <div class="preset-chip" id="fee_chip_28" onclick="simSetFee(28,this)">29CM 28%</div>
+          <div class="preset-chip" id="fee_chip_32" onclick="simSetFee(32,this)">하고 32%</div>
+          <div class="preset-chip" id="fee_chip_0" onclick="simSetFee(0,this)">직접 0%</div>
         </div>
       </div>
-
-      <div class="sim-field">
-        <div class="sim-label">원가 (COST)</div>
-        <div class="sim-input-prefix">
-          <span class="prefix">₩</span>
-          <input type="number" id="simCost" class="sim-input" value="28000" step="500" oninput="simCalc()">
-        </div>
-      </div>
-
-      <div class="sim-field">
-        <div class="sim-label">채널 수수료 <span class="sim-label-hint">플랫폼 수수료 %</span></div>
-        <div class="sim-input-prefix">
-          <span class="prefix" style="left:auto;right:12px;transform:translateY(-50%)">%</span>
-          <input type="number" id="simFee" class="sim-input" value="3" min="0" max="50" step="0.5" oninput="simCalc()" style="padding-right:32px">
-        </div>
-        <div class="preset-row" style="margin-top:8px">
-          <div class="preset-chip" onclick="simSetFee(3)">자사몰 3%</div>
-          <div class="preset-chip" onclick="simSetFee(25)">무신사 25%</div>
-          <div class="preset-chip" onclick="simSetFee(28)">29CM 28%</div>
-          <div class="preset-chip" onclick="simSetFee(32)">하고 32%</div>
-        </div>
-      </div>
-
-      <div class="sim-section-title">할인 설정</div>
-
-      <div class="sim-field">
+      <!-- 할인율 슬라이더 -->
+      <div class="sim-ctrl-block grow">
         <div class="sim-label">할인코드 / 정가 대비 할인율</div>
-        <div class="sim-slider-wrap">
-          <div class="sim-slider-row">
-            <input type="range" id="simDisc" class="sim-slider" min="0" max="50" value="0" oninput="simCalc()">
-            <div class="sim-slider-val" id="simDiscVal">0%</div>
-          </div>
-          <div class="sim-slider-ticks"><span>0%</span><span>10%</span><span>20%</span><span>30%</span><span>40%</span><span>50%</span></div>
+        <div class="sim-slider-row">
+          <input type="range" id="simDisc" class="sim-slider" min="0" max="50" value="0" oninput="simCalcAll()">
+          <div class="sim-slider-val" id="simDiscVal">0%</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:2px;padding:0 2px">
+          <span>0%</span><span>10%</span><span>20%</span><span>30%</span><span>40%</span><span>50%</span>
         </div>
       </div>
-
-      <div class="sim-field">
-        <div class="sim-label">매출쉐어 <span class="sim-label-hint">판매가의 %를 파트너에게 지급</span></div>
-        <div class="sim-slider-wrap">
-          <div class="sim-slider-row">
-            <input type="range" id="simRevShare" class="sim-slider" min="0" max="20" value="0" step="0.5" oninput="simCalc()">
-            <div class="sim-slider-val" id="simRevShareVal" style="color:var(--purple)">0%</div>
-          </div>
-          <div class="sim-slider-ticks"><span>0%</span><span>5%</span><span>10%</span><span>15%</span><span>20%</span></div>
+      <!-- 매출쉐어 슬라이더 -->
+      <div class="sim-ctrl-block grow">
+        <div class="sim-label">매출쉐어 <span class="sim-label-hint">판매가의 %를 파트너 지급</span></div>
+        <div class="sim-slider-row">
+          <input type="range" id="simRevShare" class="sim-slider" min="0" max="20" value="0" step="0.5" oninput="simCalcAll()">
+          <div class="sim-slider-val rs" id="simRevShareVal">0%</div>
         </div>
-      </div>
-
-      <div class="sim-section-title">빠른 시나리오</div>
-      <div class="preset-row" id="simPresetRow">
-        ${SIM_PRESETS.map((p,i)=>`<div class="preset-chip" id="preset_${i}" onclick="simApplyPreset(${i})">${p.name}</div>`).join('')}
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:2px;padding:0 2px">
+          <span>0%</span><span>5%</span><span>10%</span><span>15%</span><span>20%</span>
+        </div>
       </div>
     </div>
 
-    <!-- RIGHT: 결과 패널 -->
-    <div class="sim-results">
+    <!-- 시나리오 빠른 적용 -->
+    <div class="sim-scenario-chips" id="simPresetRow">${presetChips}</div>
+  </div>
 
-      <!-- 핵심 결과 -->
-      <div class="sim-result-main">
-        <div style="font-size:13px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:16px">📊 시뮬레이션 결과</div>
-        <div class="sim-result-grid">
-          <div class="sim-result-item">
-            <div class="sim-result-label">최종 판매가</div>
-            <div class="sim-result-val" id="r_salePrice" style="color:var(--primary)">—</div>
-            <div class="sim-result-sub" id="r_salePriceSub">정가 대비</div>
-          </div>
-          <div class="sim-result-item">
-            <div class="sim-result-label">실질 마진액</div>
-            <div class="sim-result-val" id="r_marginAmt" style="color:var(--green)">—</div>
-            <div class="sim-result-sub" id="r_marginAmtSub">원 / 개</div>
-          </div>
-          <div class="sim-result-item">
-            <div class="sim-result-label">실질 마진율</div>
-            <div class="sim-result-val" id="r_marginRate">—</div>
-            <div class="sim-result-sub">판매가 기준</div>
-          </div>
-        </div>
+  <!-- ② KPI 요약 -->
+  <div class="sim-kpi-strip" id="sim_kpi_strip">
+    <div class="sim-kpi"><div class="sim-kpi-label">적용 할인율</div><div class="sim-kpi-val c-blue" id="kpi_disc">0%</div><div class="sim-kpi-sub">정가 대비</div></div>
+    <div class="sim-kpi"><div class="sim-kpi-label">매출쉐어</div><div class="sim-kpi-val c-purple" id="kpi_rs">0%</div><div class="sim-kpi-sub">판매가 대비</div></div>
+    <div class="sim-kpi"><div class="sim-kpi-label">채널 수수료</div><div class="sim-kpi-val" id="kpi_fee">3%</div><div class="sim-kpi-sub">자사몰</div></div>
+    <div class="sim-kpi"><div class="sim-kpi-label">평균 마진율</div><div class="sim-kpi-val" id="kpi_avg_mg">—</div><div class="sim-kpi-sub">26SS 전품목</div></div>
+    <div class="sim-kpi"><div class="sim-kpi-label">마진 30% 이상</div><div class="sim-kpi-val c-green" id="kpi_ok_cnt">—</div><div class="sim-kpi-sub">품목 수</div></div>
+    <div class="sim-kpi"><div class="sim-kpi-label">마진 30% 미달</div><div class="sim-kpi-val c-red" id="kpi_warn_cnt">—</div><div class="sim-kpi-sub">주의 품목 수</div></div>
+  </div>
 
-        <!-- 마진 게이지 -->
-        <div class="sim-mg-bar-wrap">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-            <span style="font-size:12px;font-weight:700;color:var(--text-dim)">마진율 게이지</span>
-            <span style="font-size:11px;color:var(--text-muted)">권장 최저선 30%</span>
-          </div>
-          <div class="sim-mg-bar-track">
-            <div class="sim-mg-bar-fill" id="r_mgBarFill" style="width:0%"></div>
-            <div class="sim-mg-bar-target" style="left:30%"></div>
-          </div>
-          <div class="sim-mg-bar-labels"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
-        </div>
-
-        <div class="sim-mg-verdict" id="r_verdict"></div>
-      </div>
-
-      <!-- 수익 분해 -->
-      <div class="sim-breakdown">
-        <div style="font-size:13px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px">🔍 수익 구조 분해</div>
-        <div class="sim-breakdown-row">
-          <div class="sim-breakdown-label">📌 정가 (TAG PRICE)</div>
-          <div class="sim-breakdown-val" id="bd_tag">—</div>
-        </div>
-        <div class="sim-breakdown-row">
-          <div class="sim-breakdown-label"><span style="color:var(--accent)">−</span> 할인액 (<span id="bd_discPct">0</span>%)</div>
-          <div class="sim-breakdown-val sim-breakdown-neg" id="bd_discAmt">—</div>
-        </div>
-        <div class="sim-breakdown-row" style="background:var(--surface2);border-radius:6px;padding:9px 8px;border-bottom:none;margin:2px 0">
-          <div class="sim-breakdown-label" style="font-weight:700;color:var(--text)">= 최종 판매가</div>
-          <div class="sim-breakdown-val" id="bd_sale" style="color:var(--primary)">—</div>
-        </div>
-        <div class="sim-breakdown-row" style="padding-top:8px">
-          <div class="sim-breakdown-label"><span style="color:var(--accent)">−</span> 채널 수수료 (<span id="bd_feePct">0</span>%)</div>
-          <div class="sim-breakdown-val sim-breakdown-neg" id="bd_feeAmt">—</div>
-        </div>
-        <div class="sim-breakdown-row">
-          <div class="sim-breakdown-label"><span style="color:var(--accent)">−</span> 매출쉐어 (<span id="bd_revSharePct">0</span>%)</div>
-          <div class="sim-breakdown-val sim-breakdown-neg" id="bd_revShareAmt">—</div>
-        </div>
-        <div class="sim-breakdown-row">
-          <div class="sim-breakdown-label"><span style="color:var(--accent)">−</span> 원가</div>
-          <div class="sim-breakdown-val sim-breakdown-neg" id="bd_cost">—</div>
-        </div>
-        <div class="sim-breakdown-row">
-          <div class="sim-breakdown-label" style="color:var(--text)">= 실질 마진 (영업이익)</div>
-          <div class="sim-breakdown-val" id="bd_margin" style="font-size:18px">—</div>
-        </div>
-      </div>
-
-      <!-- 시나리오 비교 -->
-      <div class="sim-scenarios">
-        <div style="font-size:13px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px">📋 시나리오 비교 <span style="font-size:11px;font-weight:400;text-transform:none">클릭하면 적용</span></div>
-        <div id="simScenarioList"></div>
-      </div>
-
+  <!-- ③ 전품목 테이블 -->
+  <div class="sim-table-card">
+    <div class="sim-table-header">
+      <div class="sim-table-title">26SS 전품목 마진 시뮬레이션 결과</div>
+      <div style="font-size:12px;color:var(--text-muted)">▼ 마진율 낮은 순 정렬</div>
+    </div>
+    <div class="tbl-wrap">
+      <table id="simTable">
+        <thead><tr>
+          <th>상품명</th>
+          <th class="tc">카테고리</th>
+          <th class="tr">정가</th>
+          <th class="tr">판매가 <span style="font-weight:400;font-size:10px">(할인 후)</span></th>
+          <th class="tr">원가</th>
+          <th class="tr">수수료</th>
+          <th class="tr">매출쉐어</th>
+          <th class="tr">마진액</th>
+          <th>마진율</th>
+          <th class="tc">판정</th>
+        </tr></thead>
+        <tbody id="simTbody"></tbody>
+      </table>
     </div>
   </div>`;
 
-  document.getElementById('pane-simulator').innerHTML=html;
-  simCalc();
-  renderScenarios();
+  document.getElementById('pane-simulator').innerHTML = html;
+  simFee = 3;
+  simCalcAll();
 }
 
-function simGetVals(){
-  const tag=parseFloat(document.getElementById('simTagPrice').value)||0;
-  const cost=parseFloat(document.getElementById('simCost').value)||0;
-  const fee=parseFloat(document.getElementById('simFee').value)||0;
-  const disc=parseFloat(document.getElementById('simDisc').value)||0;
-  const revShare=parseFloat(document.getElementById('simRevShare').value)||0;
-  return {tag,cost,fee,disc,revShare};
-}
+let simFee = 3;
 
-function simCompute(tag,cost,fee,disc,revShare){
-  const salePrice=tag*(1-disc/100);
-  const feeAmt=salePrice*(fee/100);
-  const revShareAmt=salePrice*(revShare/100);
-  const discAmt=tag-salePrice;
-  const marginAmt=salePrice-feeAmt-revShareAmt-cost;
-  const marginRate=salePrice>0?marginAmt/salePrice*100:0;
-  return {salePrice,feeAmt,revShareAmt,discAmt,marginAmt,marginRate};
-}
-
-function simCalc(){
-  const {tag,cost,fee,disc,revShare}=simGetVals();
-  document.getElementById('simDiscVal').textContent=disc+'%';
-  document.getElementById('simRevShareVal').textContent=revShare+'%';
-
-  const r=simCompute(tag,cost,fee,disc,revShare);
-
-  // Update results
-  document.getElementById('r_salePrice').textContent=fmt(Math.round(r.salePrice))+'원';
-  document.getElementById('r_salePriceSub').textContent=`정가 대비 −${disc}%`;
-  document.getElementById('r_marginAmt').textContent=fmt(Math.round(r.marginAmt))+'원';
-  document.getElementById('r_marginRate').textContent=r.marginRate.toFixed(1)+'%';
-  document.getElementById('r_marginRate').style.color=r.marginRate>=30?'var(--green)':r.marginRate>=15?'var(--yellow)':'var(--accent)';
-
-  const barPct=Math.min(Math.max(r.marginRate,0),100);
-  const barColor=r.marginRate>=30?'var(--green)':r.marginRate>=15?'var(--yellow)':'var(--accent)';
-  document.getElementById('r_mgBarFill').style.width=barPct+'%';
-  document.getElementById('r_mgBarFill').style.background=barColor;
-
-  let verdictClass,verdictText;
-  if(r.marginRate>=30){ verdictClass='verdict-ok'; verdictText=`✅ 마진 안전 구간 — 권장 30% 이상 충족 (${r.marginRate.toFixed(1)}%)`; }
-  else if(r.marginRate>=15){ verdictClass='verdict-warn'; verdictText=`⚠️ 주의 구간 — 마진율 ${r.marginRate.toFixed(1)}% (권장 30% 미달)`; }
-  else { verdictClass='verdict-danger'; verdictText=`🚨 위험 구간 — 마진율 ${r.marginRate.toFixed(1)}% (적자 또는 극저마진)`; }
-  document.getElementById('r_verdict').className='sim-mg-verdict '+verdictClass;
-  document.getElementById('r_verdict').textContent=verdictText;
-
-  // Breakdown
-  document.getElementById('bd_tag').textContent=fmt(tag)+'원';
-  document.getElementById('bd_discPct').textContent=disc;
-  document.getElementById('bd_discAmt').textContent=r.discAmt>0?'− '+fmt(Math.round(r.discAmt))+'원':'0원';
-  document.getElementById('bd_sale').textContent=fmt(Math.round(r.salePrice))+'원';
-  document.getElementById('bd_feePct').textContent=fee;
-  document.getElementById('bd_feeAmt').textContent=r.feeAmt>0?'− '+fmt(Math.round(r.feeAmt))+'원':'0원';
-  document.getElementById('bd_revSharePct').textContent=revShare;
-  document.getElementById('bd_revShareAmt').textContent=r.revShareAmt>0?'− '+fmt(Math.round(r.revShareAmt))+'원':'0원';
-  document.getElementById('bd_cost').textContent='− '+fmt(cost)+'원';
-  const mgEl=document.getElementById('bd_margin');
-  mgEl.textContent=(r.marginAmt>=0?'':'− ')+fmt(Math.abs(Math.round(r.marginAmt)))+'원 ('+r.marginRate.toFixed(1)+'%)';
-  mgEl.className='sim-breakdown-val '+(r.marginAmt>=0?'sim-breakdown-pos':'sim-breakdown-neg');
-}
-
-function simSetFee(v){
-  document.getElementById('simFee').value=v;
-  simCalc();
+function simSetFee(v, el){
+  simFee = v;
+  document.querySelectorAll('[id^=fee_chip_]').forEach(c => c.classList.remove('active'));
+  if(el) el.classList.add('active');
+  simCalcAll();
 }
 
 function simApplyPreset(i){
-  const p=SIM_PRESETS[i];
-  document.getElementById('simDisc').value=p.disc;
-  document.getElementById('simRevShare').value=p.revShare;
-  document.querySelectorAll('.preset-chip[id^=preset_]').forEach((el,j)=>el.classList.toggle('active',j===i));
-  simCalc();
+  const p = SIM_PRESETS[i];
+  document.getElementById('simDisc').value = p.disc;
+  document.getElementById('simRevShare').value = p.revShare;
+  document.querySelectorAll('[id^=schip_]').forEach((el,j) => el.classList.toggle('active', j===i));
+  simCalcAll();
 }
 
-function simLoadItem(){
-  const kr26=dedupe(krData.filter(r=>r.season==='26SS'));
-  const idx=parseInt(document.getElementById('simItemSelect').value);
-  if(isNaN(idx)) return;
-  const item=kr26[idx];
-  if(!item) return;
-  document.getElementById('simTagPrice').value=item.tagPrice||0;
-  document.getElementById('simCost').value=item.cost||0;
-  document.getElementById('simFee').value=item.fee||3;
-  simCalc();
-}
+function simCalcAll(){
+  const disc = parseFloat(document.getElementById('simDisc').value) || 0;
+  const revShare = parseFloat(document.getElementById('simRevShare').value) || 0;
+  const fee = simFee;
 
-function renderScenarios(){
-  const {tag,cost,fee}=simGetVals();
-  const list=document.getElementById('simScenarioList');
-  if(!list) return;
-  list.innerHTML=SIM_PRESETS.map((p,i)=>{
-    const r=simCompute(tag,cost,fee,p.disc,p.revShare);
-    const col=r.marginRate>=30?'var(--green)':r.marginRate>=15?'var(--yellow)':'var(--accent)';
-    return `<div class="scenario-row" onclick="simApplyPreset(${i})">
-      <div class="scenario-name">${p.name}</div>
-      <div class="scenario-disc" style="color:var(--text-muted);font-size:11px">할인 ${p.disc}% / 쉐어 ${p.revShare}%</div>
-      <div class="scenario-bar"><div class="scenario-bar-fill" style="width:${Math.min(r.marginRate,100)}%;background:${col}"></div></div>
-      <div class="scenario-mg" style="color:${col}">${r.marginRate.toFixed(1)}%</div>
-    </div>`;
+  document.getElementById('simDiscVal').textContent = disc + '%';
+  document.getElementById('simRevShareVal').textContent = revShare + '%';
+  document.getElementById('kpi_disc').textContent = disc + '%';
+  document.getElementById('kpi_rs').textContent = revShare + '%';
+  document.getElementById('kpi_fee').textContent = fee + '%';
+
+  const kr26 = dedupe(krData.filter(r => r.season === '26SS'));
+  if(!kr26.length) return;
+
+  // Compute per item
+  const rows = kr26.map(item => {
+    const r = simCompute(item.tagPrice||0, item.cost||0, fee, disc, revShare);
+    return { item, r };
+  }).sort((a,b) => a.r.marginRate - b.r.marginRate); // 마진율 낮은 순
+
+  // KPI aggregate
+  const avgMg = rows.reduce((s,x) => s + x.r.marginRate, 0) / rows.length;
+  const okCnt = rows.filter(x => x.r.marginRate >= 30).length;
+  const warnCnt = rows.length - okCnt;
+
+  const avgEl = document.getElementById('kpi_avg_mg');
+  avgEl.textContent = avgMg.toFixed(1) + '%';
+  avgEl.className = 'sim-kpi-val ' + (avgMg >= 30 ? 'c-green' : avgMg >= 15 ? 'c-yellow' : 'c-red');
+  document.getElementById('kpi_ok_cnt').textContent = okCnt + '개';
+  document.getElementById('kpi_warn_cnt').textContent = warnCnt + '개';
+
+  // Verdict strip
+  const vs = document.getElementById('sim_verdict_strip');
+  if(vs){
+    const vc = avgMg>=30?'verdict-ok':avgMg>=15?'verdict-warn':'verdict-danger';
+    const vt = avgMg>=30?`✅ 전품목 평균 마진 안전 (${avgMg.toFixed(1)}%)`:avgMg>=15?`⚠️ 주의 — 평균 마진 ${avgMg.toFixed(1)}% (권장 미달)`:`🚨 위험 — 평균 마진 ${avgMg.toFixed(1)}%`;
+    vs.innerHTML = `<div class="sim-mg-verdict ${vc}">${vt}</div>`;
+  }
+
+  // Table rows
+  const mgColor = r => r.marginRate>=30?'var(--green)':r.marginRate>=15?'var(--yellow)':'var(--accent)';
+  const verdict = r => r.marginRate>=30
+    ? `<span class="badge badge-active">안전</span>`
+    : r.marginRate>=15
+      ? `<span class="badge" style="background:#fff8e0;color:#9a6800;border:1px solid #f0d070">주의</span>`
+      : `<span class="badge badge-urgent">위험</span>`;
+
+  document.getElementById('simTbody').innerHTML = rows.map(({item, r}) => {
+    const barW = Math.min(Math.max(r.marginRate, 0), 80); // scale ~80% = full bar
+    const col = mgColor(r);
+    const name = item.name.replace('어반사이드 ','');
+    return `<tr>
+      <td style="font-size:12px;max-width:160px;white-space:normal;font-weight:600">${name}</td>
+      <td class="tc"><span style="font-size:11px;background:var(--surface2);padding:2px 7px;border-radius:4px">${item.cat}</span></td>
+      <td class="tr" style="color:var(--text-muted)">${fmt(item.tagPrice)}원</td>
+      <td class="tr" style="font-weight:700;color:var(--primary)">${fmt(Math.round(r.salePrice))}원${disc>0?`<div style="font-size:10px;color:var(--text-muted)">−${fmt(Math.round(r.discAmt))}원</div>`:''}</td>
+      <td class="tr" style="color:var(--text-muted)">${fmt(item.cost)}원</td>
+      <td class="tr sim-breakdown-neg">${r.feeAmt>0?'−'+fmt(Math.round(r.feeAmt))+'원':'—'}</td>
+      <td class="tr" style="color:var(--purple)">${r.revShareAmt>0?'−'+fmt(Math.round(r.revShareAmt))+'원':'—'}</td>
+      <td class="tr" style="font-weight:800;color:${col}">${fmt(Math.round(r.marginAmt))}원</td>
+      <td style="min-width:120px">
+        <div class="mg-cell">
+          <div class="mg-mini-bar"><div class="mg-mini-fill" style="width:${barW/80*100}%;background:${col}"></div></div>
+          <div class="mg-val" style="color:${col}">${r.marginRate.toFixed(1)}%</div>
+        </div>
+      </td>
+      <td class="tc">${verdict(r)}</td>
+    </tr>`;
   }).join('');
 }
 
@@ -1497,7 +1402,7 @@ function switchTab(id){
   document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',tabs[i]===id));
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
   document.getElementById('pane-'+id).classList.add('active');
-  if(id==='simulator'&&!document.getElementById('pane-simulator').innerHTML.trim()) renderSimulator();
+  if(id==='simulator') renderSimulator();
 }
 
 // ============================================================
