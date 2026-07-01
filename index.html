@@ -8,23 +8,23 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
-      --bg: #0c0e18;
-      --surface: #161927;
-      --surface2: #1e2235;
-      --surface3: #252a3d;
-      --border: #2a2f45;
-      --primary: #5b8cff;
-      --primary-dim: #1e2d5e;
-      --accent: #ff6b8a;
-      --green: #3ddba6;
-      --yellow: #ffc947;
-      --orange: #ff8c42;
-      --purple: #a78bfa;
-      --text: #e4e7f5;
-      --text-dim: #7d839e;
-      --text-muted: #454c66;
-      --danger: #ff4d6d;
-      --shadow: 0 4px 24px rgba(0,0,0,.4);
+      --bg: #f4f6fa;
+      --surface: #ffffff;
+      --surface2: #f0f2f7;
+      --surface3: #e8ebf3;
+      --border: #dde1ed;
+      --primary: #3b6ef8;
+      --primary-dim: #e8effe;
+      --accent: #e8305a;
+      --green: #0ea865;
+      --yellow: #d4920a;
+      --orange: #e06b1a;
+      --purple: #7c5cdb;
+      --text: #1a1e2e;
+      --text-dim: #5a6080;
+      --text-muted: #9ba3c0;
+      --danger: #e02244;
+      --shadow: 0 2px 16px rgba(60,80,160,.10);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: var(--bg); color: var(--text); font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; font-size: 14px; line-height: 1.6; }
@@ -43,9 +43,9 @@
 
     /* ALERT BANNER */
     .alert-banner { display: flex; align-items: center; gap: 10px; padding: 10px 24px; font-size: 13px; font-weight: 600; }
-    .alert-banner.urgent { background: linear-gradient(90deg,#3d0a14,#250010); border-bottom: 1px solid #6b1020; color: #ff8fa3; }
-    .alert-banner.notice { background: linear-gradient(90deg,#1a2d0a,#0d1a06); border-bottom: 1px solid #2d5010; color: #7dda58; }
-    .alert-banner.info { background: linear-gradient(90deg,#0a1d3d,#060d25); border-bottom: 1px solid #103060; color: #8fb8ff; }
+    .alert-banner.urgent { background: #fff1f4; border-bottom: 1px solid #ffd0da; color: #c0183a; }
+    .alert-banner.notice { background: #f0faf4; border-bottom: 1px solid #b6e8cc; color: #0a7a44; }
+    .alert-banner.info { background: #f0f4ff; border-bottom: 1px solid #c0d0fc; color: #2a50c8; }
 
     /* TABS */
     .tab-nav { display: flex; gap: 0; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; overflow-x: auto; }
@@ -80,18 +80,18 @@
 
     /* BADGES */
     .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-    .badge-active { background: #0d2d1a; color: var(--green); border: 1px solid #1a5e35; }
-    .badge-ended { background: #2d1a0d; color: var(--text-dim); border: 1px solid #5e3a1a; }
-    .badge-upcoming { background: #0d1a2d; color: var(--primary); border: 1px solid #1a355e; }
-    .badge-urgent { background: #3d0a14; color: var(--accent); border: 1px solid #7a1428; }
+    .badge-active { background: #e6f9f0; color: var(--green); border: 1px solid #9adec1; }
+    .badge-ended { background: #f0f0f4; color: var(--text-dim); border: 1px solid #d0d4e4; }
+    .badge-upcoming { background: #edf1ff; color: var(--primary); border: 1px solid #afc0f8; }
+    .badge-urgent { background: #ffeef2; color: var(--accent); border: 1px solid #f8a0b4; }
 
     /* DISCOUNT */
     .disc { display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: 800; font-size: 12px; font-family: monospace; }
-    .d0 { background: #1a3d28; color: var(--green); }
-    .d1 { background: #1a2d5e; color: var(--primary); }
-    .d2 { background: #3d2d0a; color: var(--yellow); }
-    .d3 { background: #3d1a0a; color: var(--orange); }
-    .d4 { background: #3d0a14; color: var(--accent); }
+    .d0 { background: #e6f9f0; color: #0a8050; }
+    .d1 { background: #edf1ff; color: #2a50c8; }
+    .d2 { background: #fff8e0; color: #9a6800; }
+    .d3 { background: #fff2e0; color: #b84a00; }
+    .d4 { background: #ffeef2; color: #c01030; }
 
     /* SELL-THROUGH */
     .st-bar-wrap { display: flex; align-items: center; gap: 8px; }
@@ -124,7 +124,7 @@
 
     /* AI CARD */
     .ai-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 12px; }
-    .ai-card:hover { border-color: var(--primary-dim); }
+    .ai-card:hover { border-color: #afc0f8; box-shadow: 0 2px 12px rgba(60,80,200,.08); }
     .ai-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
     .ai-name { font-weight: 700; font-size: 14px; }
     .ai-code { font-size: 11px; color: var(--text-muted); font-family: monospace; margin-top: 2px; }
@@ -147,10 +147,10 @@
     /* STRATEGY BOXES */
     .strat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 20px; }
     .strat-box { border-radius: 12px; padding: 18px 20px; border: 1px solid; }
-    .strat-box.now { background: #060d1a; border-color: #1a3560; }
-    .strat-box.next { background: #0a1a06; border-color: #1a5e20; }
-    .strat-box.future { background: #1a0a06; border-color: #5e2010; }
-    .strat-box.jp { background: #0d0a1a; border-color: #3a1a6e; }
+    .strat-box.now { background: #f0f4ff; border-color: #c0d0fc; }
+    .strat-box.next { background: #f0faf5; border-color: #b6e8cc; }
+    .strat-box.future { background: #fff6f0; border-color: #f0c098; }
+    .strat-box.jp { background: #f8f0ff; border-color: #d4b8f8; }
     .strat-box-title { font-size: 13px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
     .strat-item { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; font-size: 12px; border-bottom: 1px solid var(--border); }
     .strat-item:last-child { border-bottom: none; }
@@ -190,9 +190,86 @@
 
     .empty-note { text-align: center; padding: 32px; color: var(--text-muted); font-size: 13px; }
 
-    .highlight-row td { background: #0d1a2d !important; }
+    .highlight-row td { background: #edf1ff !important; }
     .parity-alert { color: var(--accent); font-size: 11px; }
     .parity-ok { color: var(--green); font-size: 11px; }
+
+    /* ============================================================
+       SIMULATOR TAB STYLES
+    ============================================================ */
+    .sim-layout { display: grid; grid-template-columns: 400px 1fr; gap: 24px; align-items: start; }
+    @media (max-width: 1100px) { .sim-layout { grid-template-columns: 1fr; } }
+
+    /* Input panel */
+    .sim-inputs { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; position: sticky; top: 70px; }
+    .sim-section-title { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 12px; display: flex; align-items: center; gap: 8px; }
+    .sim-section-title:first-child { margin-top: 0; }
+    .sim-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .sim-field { margin-bottom: 14px; }
+    .sim-label { font-size: 12px; font-weight: 600; color: var(--text-dim); margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+    .sim-label-hint { font-size: 11px; color: var(--text-muted); font-weight: 400; }
+    .sim-input { width: 100%; background: var(--surface2); border: 1.5px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 9px; font-size: 15px; font-weight: 700; outline: none; transition: border-color .15s; }
+    .sim-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,110,248,.12); }
+    .sim-input-prefix { position: relative; }
+    .sim-input-prefix input { padding-left: 36px; }
+    .sim-input-prefix .prefix { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 13px; font-weight: 600; pointer-events: none; }
+
+    /* Slider */
+    .sim-slider-wrap { display: flex; flex-direction: column; gap: 6px; }
+    .sim-slider-row { display: flex; align-items: center; gap: 12px; }
+    .sim-slider { flex: 1; -webkit-appearance: none; height: 6px; border-radius: 3px; background: var(--border); outline: none; cursor: pointer; }
+    .sim-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--primary); border: 3px solid white; box-shadow: 0 1px 6px rgba(59,110,248,.4); cursor: pointer; }
+    .sim-slider-val { font-size: 18px; font-weight: 900; font-family: monospace; min-width: 54px; text-align: right; color: var(--primary); }
+    .sim-slider-ticks { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); padding: 0 2px; }
+
+    /* Preset chips */
+    .preset-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .preset-chip { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border); background: var(--surface2); color: var(--text-dim); transition: all .15s; white-space: nowrap; }
+    .preset-chip:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-dim); }
+    .preset-chip.active { background: var(--primary); border-color: var(--primary); color: white; }
+
+    /* Result panel */
+    .sim-results { display: flex; flex-direction: column; gap: 16px; }
+
+    /* Big result card */
+    .sim-result-main { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 24px; }
+    .sim-result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+    .sim-result-item { text-align: center; padding: 16px; background: var(--surface2); border-radius: 10px; border: 1px solid var(--border); }
+    .sim-result-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 6px; }
+    .sim-result-val { font-size: 28px; font-weight: 900; font-family: monospace; line-height: 1.1; }
+    .sim-result-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+    /* Margin bar */
+    .sim-mg-bar-wrap { margin-top: 4px; }
+    .sim-mg-bar-track { height: 12px; border-radius: 6px; background: var(--surface3); position: relative; overflow: hidden; }
+    .sim-mg-bar-fill { height: 100%; border-radius: 6px; transition: width .4s ease, background .4s; }
+    .sim-mg-bar-target { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--text-dim); }
+    .sim-mg-bar-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+    .sim-mg-verdict { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 9px; font-size: 13px; font-weight: 700; margin-top: 14px; }
+    .verdict-ok { background: #e8f9f0; color: #0a7a44; border: 1px solid #9adec1; }
+    .verdict-warn { background: #fffbec; color: #9a6800; border: 1px solid #f0d070; }
+    .verdict-danger { background: #fff0f3; color: #c01030; border: 1px solid #f0a0b0; }
+
+    /* Breakdown table */
+    .sim-breakdown { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px 24px; }
+    .sim-breakdown-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); }
+    .sim-breakdown-row:last-child { border-bottom: none; font-weight: 800; font-size: 15px; }
+    .sim-breakdown-label { font-size: 13px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
+    .sim-breakdown-val { font-size: 13px; font-weight: 700; font-family: monospace; }
+    .sim-breakdown-neg { color: var(--accent); }
+    .sim-breakdown-pos { color: var(--green); }
+
+    /* Scenario comparison */
+    .sim-scenarios { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px 24px; }
+    .scenario-row { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 9px; border: 1px solid var(--border); background: var(--surface2); margin-bottom: 8px; cursor: pointer; transition: all .15s; }
+    .scenario-row:hover { border-color: var(--primary); background: var(--primary-dim); }
+    .scenario-row.selected { border-color: var(--primary); background: var(--primary-dim); }
+    .scenario-name { font-size: 13px; font-weight: 700; flex: 1; }
+    .scenario-disc { font-size: 12px; font-family: monospace; font-weight: 700; }
+    .scenario-mg { font-size: 14px; font-weight: 900; font-family: monospace; }
+    .scenario-bar { flex: 2; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .scenario-bar-fill { height: 100%; border-radius: 4px; }
 
     /* PRICING PRINCIPLES PANEL */
     .principles-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; margin-bottom: 22px; }
@@ -208,25 +285,25 @@
     .disc-spectrum-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 4px; }
     .disc-level { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px; border: 1px solid; position: relative; overflow: hidden; }
     .disc-level::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
-    .disc-level.lv0 { background: #0a1f12; border-color: #1a4028; }
+    .disc-level.lv0 { background: #f0faf5; border-color: #b6e8cc; }
     .disc-level.lv0::before { background: var(--green); }
-    .disc-level.lv1 { background: #0a1020; border-color: #1a2a50; }
+    .disc-level.lv1 { background: #f0f4ff; border-color: #c0d0fc; }
     .disc-level.lv1::before { background: var(--primary); }
-    .disc-level.lv2 { background: #1a1400; border-color: #3a2e00; }
+    .disc-level.lv2 { background: #fffbf0; border-color: #f0d880; }
     .disc-level.lv2::before { background: var(--yellow); }
-    .disc-level.lv3 { background: #1a0e00; border-color: #3a2000; }
+    .disc-level.lv3 { background: #fff6f0; border-color: #f0c098; }
     .disc-level.lv3::before { background: var(--orange); }
-    .disc-level.lv4 { background: #1a0408; border-color: #3a0a12; }
+    .disc-level.lv4 { background: #fff0f3; border-color: #f0a0b0; }
     .disc-level.lv4::before { background: var(--accent); }
     .disc-level-range { font-size: 13px; font-weight: 800; font-family: monospace; width: 56px; flex-shrink: 0; }
     .disc-level-info { flex: 1; }
     .disc-level-name { font-size: 12px; font-weight: 700; line-height: 1.2; }
     .disc-level-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; line-height: 1.3; }
     .disc-level-tag { flex-shrink: 0; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
-    .tag-safe { background: #0d3020; color: var(--green); }
-    .tag-watch { background: #2d2000; color: var(--yellow); }
-    .tag-risk { background: #2d0d00; color: var(--orange); }
-    .tag-danger { background: #2d0010; color: var(--accent); }
+    .tag-safe { background: #e0f8ec; color: #0a7a44; }
+    .tag-watch { background: #fff4d0; color: #9a6800; }
+    .tag-risk { background: #fff0e0; color: #b84a00; }
+    .tag-danger { background: #ffeef2; color: #c01030; }
 
     /* Margin gauge */
     .mg-gauge-wrap { display: flex; flex-direction: column; gap: 12px; }
@@ -270,10 +347,11 @@
 <!-- TABS -->
 <div class="tab-nav">
   <div class="tab-btn active" onclick="switchTab('summary')">📊 26SS 현황</div>
-  <div class="tab-btn" onclick="switchTab('history')">📅 기간별 할인 히스토리</div>
+  <div class="tab-btn" onclick="switchTab('history')">📅 할인 히스토리</div>
   <div class="tab-btn" onclick="switchTab('plan')">🗓 이번달 → 다음달 계획</div>
   <div class="tab-btn" onclick="switchTab('ai')">🤖 품목별 AI 해석</div>
   <div class="tab-btn" onclick="switchTab('compare')">🌏 국내 vs 일본</div>
+  <div class="tab-btn" onclick="switchTab('simulator')" style="color:var(--primary);font-weight:800">🧮 마진 시뮬레이터</div>
 </div>
 
 <!-- TAB PANES -->
@@ -282,6 +360,7 @@
 <div id="pane-plan" class="tab-pane"><div class="loading-state"><div class="loader"></div>로딩 중...</div></div>
 <div id="pane-ai" class="tab-pane"><div class="loading-state"><div class="loader"></div>AI 분석 중...</div></div>
 <div id="pane-compare" class="tab-pane"><div class="loading-state"><div class="loader"></div>로딩 중...</div></div>
+<div id="pane-simulator" class="tab-pane"></div>
 
 <script>
 // ============================================================
@@ -1126,12 +1205,299 @@ function renderCompare(){
 }
 
 // ============================================================
+// SIMULATOR
+// ============================================================
+const SIM_PRESETS = [
+  { name:'정가 판매', disc:0, revShare:0 },
+  { name:'SNS 코드 5%', disc:5, revShare:0 },
+  { name:'SNS 코드 10%', disc:10, revShare:0 },
+  { name:'매출쉐어 5%', disc:0, revShare:5 },
+  { name:'매출쉐어 10%', disc:0, revShare:10 },
+  { name:'할인15%+쉐어5%', disc:15, revShare:5 },
+  { name:'세일 25%', disc:25, revShare:0 },
+  { name:'세일 30%', disc:30, revShare:0 },
+];
+
+function renderSimulator(){
+  const kr26=dedupe(krData.filter(r=>r.season==='26SS'));
+  const itemOpts=kr26.map((r,i)=>`<option value="${i}">${r.name.replace('어반사이드 ','')} (정가 ${fmt(r.tagPrice)}원)</option>`).join('');
+
+  const html=`
+  <div style="margin-bottom:20px">
+    <div style="font-size:22px;font-weight:900;margin-bottom:4px">🧮 마진 시뮬레이터</div>
+    <div style="font-size:13px;color:var(--text-dim)">할인코드 % · 매출쉐어 % · 채널 수수료를 조합해서 실제 마진을 실시간으로 확인하세요.</div>
+  </div>
+
+  <div class="sim-layout">
+    <!-- LEFT: 입력 패널 -->
+    <div class="sim-inputs">
+      <div class="sim-section-title">제품 선택 또는 직접 입력</div>
+
+      <div class="sim-field">
+        <div class="sim-label">26SS 품목에서 불러오기 <span class="sim-label-hint">선택 시 자동 입력</span></div>
+        <select id="simItemSelect" class="sim-input" style="font-size:13px;font-weight:600" onchange="simLoadItem()">
+          <option value="">— 직접 입력 —</option>
+          ${itemOpts}
+        </select>
+      </div>
+
+      <div class="sim-field">
+        <div class="sim-label">정가 (TAG PRICE)</div>
+        <div class="sim-input-prefix">
+          <span class="prefix">₩</span>
+          <input type="number" id="simTagPrice" class="sim-input" value="89000" step="1000" oninput="simCalc()">
+        </div>
+      </div>
+
+      <div class="sim-field">
+        <div class="sim-label">원가 (COST)</div>
+        <div class="sim-input-prefix">
+          <span class="prefix">₩</span>
+          <input type="number" id="simCost" class="sim-input" value="28000" step="500" oninput="simCalc()">
+        </div>
+      </div>
+
+      <div class="sim-field">
+        <div class="sim-label">채널 수수료 <span class="sim-label-hint">플랫폼 수수료 %</span></div>
+        <div class="sim-input-prefix">
+          <span class="prefix" style="left:auto;right:12px;transform:translateY(-50%)">%</span>
+          <input type="number" id="simFee" class="sim-input" value="3" min="0" max="50" step="0.5" oninput="simCalc()" style="padding-right:32px">
+        </div>
+        <div class="preset-row" style="margin-top:8px">
+          <div class="preset-chip" onclick="simSetFee(3)">자사몰 3%</div>
+          <div class="preset-chip" onclick="simSetFee(25)">무신사 25%</div>
+          <div class="preset-chip" onclick="simSetFee(28)">29CM 28%</div>
+          <div class="preset-chip" onclick="simSetFee(32)">하고 32%</div>
+        </div>
+      </div>
+
+      <div class="sim-section-title">할인 설정</div>
+
+      <div class="sim-field">
+        <div class="sim-label">할인코드 / 정가 대비 할인율</div>
+        <div class="sim-slider-wrap">
+          <div class="sim-slider-row">
+            <input type="range" id="simDisc" class="sim-slider" min="0" max="50" value="0" oninput="simCalc()">
+            <div class="sim-slider-val" id="simDiscVal">0%</div>
+          </div>
+          <div class="sim-slider-ticks"><span>0%</span><span>10%</span><span>20%</span><span>30%</span><span>40%</span><span>50%</span></div>
+        </div>
+      </div>
+
+      <div class="sim-field">
+        <div class="sim-label">매출쉐어 <span class="sim-label-hint">판매가의 %를 파트너에게 지급</span></div>
+        <div class="sim-slider-wrap">
+          <div class="sim-slider-row">
+            <input type="range" id="simRevShare" class="sim-slider" min="0" max="20" value="0" step="0.5" oninput="simCalc()">
+            <div class="sim-slider-val" id="simRevShareVal" style="color:var(--purple)">0%</div>
+          </div>
+          <div class="sim-slider-ticks"><span>0%</span><span>5%</span><span>10%</span><span>15%</span><span>20%</span></div>
+        </div>
+      </div>
+
+      <div class="sim-section-title">빠른 시나리오</div>
+      <div class="preset-row" id="simPresetRow">
+        ${SIM_PRESETS.map((p,i)=>`<div class="preset-chip" id="preset_${i}" onclick="simApplyPreset(${i})">${p.name}</div>`).join('')}
+      </div>
+    </div>
+
+    <!-- RIGHT: 결과 패널 -->
+    <div class="sim-results">
+
+      <!-- 핵심 결과 -->
+      <div class="sim-result-main">
+        <div style="font-size:13px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:16px">📊 시뮬레이션 결과</div>
+        <div class="sim-result-grid">
+          <div class="sim-result-item">
+            <div class="sim-result-label">최종 판매가</div>
+            <div class="sim-result-val" id="r_salePrice" style="color:var(--primary)">—</div>
+            <div class="sim-result-sub" id="r_salePriceSub">정가 대비</div>
+          </div>
+          <div class="sim-result-item">
+            <div class="sim-result-label">실질 마진액</div>
+            <div class="sim-result-val" id="r_marginAmt" style="color:var(--green)">—</div>
+            <div class="sim-result-sub" id="r_marginAmtSub">원 / 개</div>
+          </div>
+          <div class="sim-result-item">
+            <div class="sim-result-label">실질 마진율</div>
+            <div class="sim-result-val" id="r_marginRate">—</div>
+            <div class="sim-result-sub">판매가 기준</div>
+          </div>
+        </div>
+
+        <!-- 마진 게이지 -->
+        <div class="sim-mg-bar-wrap">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <span style="font-size:12px;font-weight:700;color:var(--text-dim)">마진율 게이지</span>
+            <span style="font-size:11px;color:var(--text-muted)">권장 최저선 30%</span>
+          </div>
+          <div class="sim-mg-bar-track">
+            <div class="sim-mg-bar-fill" id="r_mgBarFill" style="width:0%"></div>
+            <div class="sim-mg-bar-target" style="left:30%"></div>
+          </div>
+          <div class="sim-mg-bar-labels"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
+        </div>
+
+        <div class="sim-mg-verdict" id="r_verdict"></div>
+      </div>
+
+      <!-- 수익 분해 -->
+      <div class="sim-breakdown">
+        <div style="font-size:13px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px">🔍 수익 구조 분해</div>
+        <div class="sim-breakdown-row">
+          <div class="sim-breakdown-label">📌 정가 (TAG PRICE)</div>
+          <div class="sim-breakdown-val" id="bd_tag">—</div>
+        </div>
+        <div class="sim-breakdown-row">
+          <div class="sim-breakdown-label"><span style="color:var(--accent)">−</span> 할인액 (<span id="bd_discPct">0</span>%)</div>
+          <div class="sim-breakdown-val sim-breakdown-neg" id="bd_discAmt">—</div>
+        </div>
+        <div class="sim-breakdown-row" style="background:var(--surface2);border-radius:6px;padding:9px 8px;border-bottom:none;margin:2px 0">
+          <div class="sim-breakdown-label" style="font-weight:700;color:var(--text)">= 최종 판매가</div>
+          <div class="sim-breakdown-val" id="bd_sale" style="color:var(--primary)">—</div>
+        </div>
+        <div class="sim-breakdown-row" style="padding-top:8px">
+          <div class="sim-breakdown-label"><span style="color:var(--accent)">−</span> 채널 수수료 (<span id="bd_feePct">0</span>%)</div>
+          <div class="sim-breakdown-val sim-breakdown-neg" id="bd_feeAmt">—</div>
+        </div>
+        <div class="sim-breakdown-row">
+          <div class="sim-breakdown-label"><span style="color:var(--accent)">−</span> 매출쉐어 (<span id="bd_revSharePct">0</span>%)</div>
+          <div class="sim-breakdown-val sim-breakdown-neg" id="bd_revShareAmt">—</div>
+        </div>
+        <div class="sim-breakdown-row">
+          <div class="sim-breakdown-label"><span style="color:var(--accent)">−</span> 원가</div>
+          <div class="sim-breakdown-val sim-breakdown-neg" id="bd_cost">—</div>
+        </div>
+        <div class="sim-breakdown-row">
+          <div class="sim-breakdown-label" style="color:var(--text)">= 실질 마진 (영업이익)</div>
+          <div class="sim-breakdown-val" id="bd_margin" style="font-size:18px">—</div>
+        </div>
+      </div>
+
+      <!-- 시나리오 비교 -->
+      <div class="sim-scenarios">
+        <div style="font-size:13px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px">📋 시나리오 비교 <span style="font-size:11px;font-weight:400;text-transform:none">클릭하면 적용</span></div>
+        <div id="simScenarioList"></div>
+      </div>
+
+    </div>
+  </div>`;
+
+  document.getElementById('pane-simulator').innerHTML=html;
+  simCalc();
+  renderScenarios();
+}
+
+function simGetVals(){
+  const tag=parseFloat(document.getElementById('simTagPrice').value)||0;
+  const cost=parseFloat(document.getElementById('simCost').value)||0;
+  const fee=parseFloat(document.getElementById('simFee').value)||0;
+  const disc=parseFloat(document.getElementById('simDisc').value)||0;
+  const revShare=parseFloat(document.getElementById('simRevShare').value)||0;
+  return {tag,cost,fee,disc,revShare};
+}
+
+function simCompute(tag,cost,fee,disc,revShare){
+  const salePrice=tag*(1-disc/100);
+  const feeAmt=salePrice*(fee/100);
+  const revShareAmt=salePrice*(revShare/100);
+  const discAmt=tag-salePrice;
+  const marginAmt=salePrice-feeAmt-revShareAmt-cost;
+  const marginRate=salePrice>0?marginAmt/salePrice*100:0;
+  return {salePrice,feeAmt,revShareAmt,discAmt,marginAmt,marginRate};
+}
+
+function simCalc(){
+  const {tag,cost,fee,disc,revShare}=simGetVals();
+  document.getElementById('simDiscVal').textContent=disc+'%';
+  document.getElementById('simRevShareVal').textContent=revShare+'%';
+
+  const r=simCompute(tag,cost,fee,disc,revShare);
+
+  // Update results
+  document.getElementById('r_salePrice').textContent=fmt(Math.round(r.salePrice))+'원';
+  document.getElementById('r_salePriceSub').textContent=`정가 대비 −${disc}%`;
+  document.getElementById('r_marginAmt').textContent=fmt(Math.round(r.marginAmt))+'원';
+  document.getElementById('r_marginRate').textContent=r.marginRate.toFixed(1)+'%';
+  document.getElementById('r_marginRate').style.color=r.marginRate>=30?'var(--green)':r.marginRate>=15?'var(--yellow)':'var(--accent)';
+
+  const barPct=Math.min(Math.max(r.marginRate,0),100);
+  const barColor=r.marginRate>=30?'var(--green)':r.marginRate>=15?'var(--yellow)':'var(--accent)';
+  document.getElementById('r_mgBarFill').style.width=barPct+'%';
+  document.getElementById('r_mgBarFill').style.background=barColor;
+
+  let verdictClass,verdictText;
+  if(r.marginRate>=30){ verdictClass='verdict-ok'; verdictText=`✅ 마진 안전 구간 — 권장 30% 이상 충족 (${r.marginRate.toFixed(1)}%)`; }
+  else if(r.marginRate>=15){ verdictClass='verdict-warn'; verdictText=`⚠️ 주의 구간 — 마진율 ${r.marginRate.toFixed(1)}% (권장 30% 미달)`; }
+  else { verdictClass='verdict-danger'; verdictText=`🚨 위험 구간 — 마진율 ${r.marginRate.toFixed(1)}% (적자 또는 극저마진)`; }
+  document.getElementById('r_verdict').className='sim-mg-verdict '+verdictClass;
+  document.getElementById('r_verdict').textContent=verdictText;
+
+  // Breakdown
+  document.getElementById('bd_tag').textContent=fmt(tag)+'원';
+  document.getElementById('bd_discPct').textContent=disc;
+  document.getElementById('bd_discAmt').textContent=r.discAmt>0?'− '+fmt(Math.round(r.discAmt))+'원':'0원';
+  document.getElementById('bd_sale').textContent=fmt(Math.round(r.salePrice))+'원';
+  document.getElementById('bd_feePct').textContent=fee;
+  document.getElementById('bd_feeAmt').textContent=r.feeAmt>0?'− '+fmt(Math.round(r.feeAmt))+'원':'0원';
+  document.getElementById('bd_revSharePct').textContent=revShare;
+  document.getElementById('bd_revShareAmt').textContent=r.revShareAmt>0?'− '+fmt(Math.round(r.revShareAmt))+'원':'0원';
+  document.getElementById('bd_cost').textContent='− '+fmt(cost)+'원';
+  const mgEl=document.getElementById('bd_margin');
+  mgEl.textContent=(r.marginAmt>=0?'':'− ')+fmt(Math.abs(Math.round(r.marginAmt)))+'원 ('+r.marginRate.toFixed(1)+'%)';
+  mgEl.className='sim-breakdown-val '+(r.marginAmt>=0?'sim-breakdown-pos':'sim-breakdown-neg');
+}
+
+function simSetFee(v){
+  document.getElementById('simFee').value=v;
+  simCalc();
+}
+
+function simApplyPreset(i){
+  const p=SIM_PRESETS[i];
+  document.getElementById('simDisc').value=p.disc;
+  document.getElementById('simRevShare').value=p.revShare;
+  document.querySelectorAll('.preset-chip[id^=preset_]').forEach((el,j)=>el.classList.toggle('active',j===i));
+  simCalc();
+}
+
+function simLoadItem(){
+  const kr26=dedupe(krData.filter(r=>r.season==='26SS'));
+  const idx=parseInt(document.getElementById('simItemSelect').value);
+  if(isNaN(idx)) return;
+  const item=kr26[idx];
+  if(!item) return;
+  document.getElementById('simTagPrice').value=item.tagPrice||0;
+  document.getElementById('simCost').value=item.cost||0;
+  document.getElementById('simFee').value=item.fee||3;
+  simCalc();
+}
+
+function renderScenarios(){
+  const {tag,cost,fee}=simGetVals();
+  const list=document.getElementById('simScenarioList');
+  if(!list) return;
+  list.innerHTML=SIM_PRESETS.map((p,i)=>{
+    const r=simCompute(tag,cost,fee,p.disc,p.revShare);
+    const col=r.marginRate>=30?'var(--green)':r.marginRate>=15?'var(--yellow)':'var(--accent)';
+    return `<div class="scenario-row" onclick="simApplyPreset(${i})">
+      <div class="scenario-name">${p.name}</div>
+      <div class="scenario-disc" style="color:var(--text-muted);font-size:11px">할인 ${p.disc}% / 쉐어 ${p.revShare}%</div>
+      <div class="scenario-bar"><div class="scenario-bar-fill" style="width:${Math.min(r.marginRate,100)}%;background:${col}"></div></div>
+      <div class="scenario-mg" style="color:${col}">${r.marginRate.toFixed(1)}%</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
 // TABS
 // ============================================================
 function switchTab(id){
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['summary','history','plan','ai','compare'][i]===id));
+  const tabs=['summary','history','plan','ai','compare','simulator'];
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',tabs[i]===id));
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
   document.getElementById('pane-'+id).classList.add('active');
+  if(id==='simulator'&&!document.getElementById('pane-simulator').innerHTML.trim()) renderSimulator();
 }
 
 // ============================================================
